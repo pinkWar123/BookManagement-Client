@@ -3,19 +3,15 @@ import { FunctionComponent } from "react";
 import { Book } from "react-feather";
 import styles from "./Auth.module.scss";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { getLastSegment } from "../../helpers/location";
 interface AuthLayoutProps {}
 
 const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const getLastSegment = () => {
-    const pathSegments = location.pathname.split("/").filter(Boolean);
-    const lastSegment = pathSegments[pathSegments.length - 1];
-    return lastSegment;
-  };
 
   const authNavigate = () => {
-    const lastSegment = getLastSegment();
+    const lastSegment = getLastSegment(location);
     if (lastSegment === "signup") {
       navigate("/auth/login");
     } else if (lastSegment === "login") {
@@ -35,12 +31,12 @@ const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
           </Flex>
           <Flex gap="large">
             <div className={styles["has-account"]}>
-              {getLastSegment() === "signup"
+              {getLastSegment(location) === "signup"
                 ? "Đã có tài khoản?"
                 : "Chưa có tài khoản?"}
             </div>
             <Button onClick={authNavigate}>
-              {getLastSegment() === "signup" ? "Đằng nhập" : "Đăng ký"}
+              {getLastSegment(location) === "signup" ? "Đằng nhập" : "Đăng ký"}
             </Button>
           </Flex>
         </Flex>

@@ -1,0 +1,9 @@
+export const HOME_PAGE_URL = "/home";
+export const BOOK_PAGE_URL = "/book";
+export const BOOK_ENTRY_PAGE_URL = "/entry";
+export const INVOICE_PAGE_URL = "/invoice"; // Lập hóa đơn
+export const INVENTORY_PAGE_URL = "/inventory";
+export const PAYMENT_PAGE_URL = "/payment";
+export const REPORT_PAGE_URL = "/report";
+export const REGULATION_PAGE_URL = "/regulation";
+export const USER_PAGE_URL = "/user";
