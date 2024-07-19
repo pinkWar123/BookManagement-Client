@@ -1,8 +1,9 @@
 import { FunctionComponent } from "react";
 import Sidebar from "../components/Layout/Sidebar/Sidebar";
-import { Layout, Typography } from "antd";
+import { Layout } from "antd";
 import { Content } from "antd/es/layout/layout";
 import MainHeader from "../components/Layout/Header/MainHeader";
+import { Outlet } from "react-router-dom";
 
 interface MainLayoutProps {}
 
@@ -13,8 +14,13 @@ const MainLayout: FunctionComponent<MainLayoutProps> = () => {
         <Sidebar />
         <Layout>
           <MainHeader />
-          <Content>
-            <Typography.Title>This is the main content</Typography.Title>
+          <Content
+            style={{
+              padding: "40px",
+              marginLeft: "7%",
+            }}
+          >
+            <Outlet />
           </Content>
         </Layout>
       </Layout>
