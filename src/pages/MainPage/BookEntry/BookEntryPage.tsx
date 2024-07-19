@@ -3,12 +3,12 @@ import { FunctionComponent } from "react";
 import dayjs from "dayjs";
 import customParseFromat from "dayjs/plugin/customParseFormat";
 import BookEntryTable from "./BookEntryTable";
+import { dateFormat } from "../../../constants/dateFormat";
 
 dayjs.extend(customParseFromat);
 
 interface BookEntryPageProps {}
 
-const dateFormat = "DD/MM/YYYY";
 const BookEntryPage: FunctionComponent<BookEntryPageProps> = () => {
   return (
     <>

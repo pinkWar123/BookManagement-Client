@@ -1,40 +1,63 @@
-import { Button, Flex, Form, Input, Popconfirm, Table, TableProps } from "antd";
-import TypedInputNumber from "antd/es/input-number";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Popconfirm,
+  Table,
+  TableProps,
+  Tag,
+} from "antd";
 import { FunctionComponent, useState } from "react";
 import { Trash } from "react-feather";
 import TitleDebounceSelect, {
   BookValue,
 } from "../../../components/Debouncer/TitleDebounceSelect";
+import TypedInputNumber from "antd/es/input-number";
 
-interface BookEntryTableProps {}
+interface InvoiceTableTableProps {}
 
 interface DataType {
   order: number;
   key: number;
   title: string;
-  genre: string;
-  author: string;
-  stockQuantity: number;
+  sellQuantity: number;
+  price: number;
+  total: number;
 }
 
-const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
+const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
   const [data, setData] = useState<DataType[] | undefined>();
   const [count, setCount] = useState<number>(1);
+  const [total, setTotal] = useState<
+    [{ key: string; value: number }] | undefined
+  >();
   const [form] = Form.useForm();
   const handleAdd = () => {
     const newData: DataType = {
       title: "",
       key: count,
       order: count,
-      genre: "",
-      author: "",
-      stockQuantity: 0,
+      sellQuantity: 0,
+      price: 0,
+      total: 0,
     };
     setData((prev) => {
       if (!prev) return [newData];
       return [...prev, newData];
     });
     setCount((prev) => prev + 1);
+    setTotal((prev) => {
+      const newItem = { key: count.toString(), value: 0 };
+      if (!prev) return [newItem];
+      return [
+        ...prev,
+        {
+          key: count.toString(),
+          value: 0,
+        },
+      ];
+    });
   };
   const handleRemove = (key: number) => {
     console.log(key);
@@ -53,6 +76,11 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   const handleSelect = (id: string, item?: BookValue) => {
     console.log("change");
     form.setFieldValue(id, item);
+  };
+
+  const calculateTotal = (record: DataType) => {
+    console.log(record.price);
+    return record.sellQuantity * record.price;
   };
 
   const columns: TableProps<DataType>["columns"] = [
@@ -86,35 +114,64 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       },
     },
     {
-      title: "Thể loại",
-      dataIndex: "genre",
-      key: "genre",
-      render: (_, record) => (
-        <Form.Item name={[record.key.toString(), "genre"]}>
-          <Input disabled variant="borderless" />
-        </Form.Item>
-      ),
-    },
-    {
-      title: "Tác giả",
-      dataIndex: "author",
-      key: "author",
-      render: (_, record) => (
-        <Form.Item name={[record.key.toString(), "author"]}>
-          <Input disabled variant="borderless" />
-        </Form.Item>
-      ),
-    },
-    {
       title: "Số lượng",
-      dataIndex: "stockQuantity",
-      key: "stockQuantity",
+      dataIndex: "sellQuantity",
+      key: "sellQuantity",
       render: (_, record) => (
-        <Form.Item
-          name={[record.key.toString(), "stockQuantity"]}
-          rules={[{ required: true }]}
-        >
-          <TypedInputNumber />
+        <Form.Item name={[record.key.toString(), "sellQuantity"]}>
+          <TypedInputNumber
+            type="number"
+            min={0}
+            required
+            onChange={(e) => {
+              const _record = form.getFieldValue(record.key.toString());
+              console.log(_record.price);
+              console.log(e);
+              console.log(e * _record.price);
+              form.setFieldValue(record.key.toString(), {
+                ..._record,
+                sellQuantity: e,
+              });
+              setTotal((prev) => {
+                const newItem = {
+                  key: record.key.toString(),
+                  value: e !== null ? e * _record.price : 0,
+                };
+                if (!prev) return prev;
+                else
+                  return (
+                    prev?.map((item) =>
+                      item.key === newItem.key ? newItem : item
+                    ) ?? []
+                  );
+              });
+            }}
+          />
+        </Form.Item>
+      ),
+    },
+    {
+      title: "Đơn giá",
+      dataIndex: "price",
+      key: "price",
+      render: (_, record) => (
+        <Form.Item name={[record.key.toString(), "price"]}>
+          <Input disabled variant="borderless" />
+        </Form.Item>
+      ),
+    },
+    {
+      title: "Thành tiền",
+      dataIndex: "total",
+      key: "total",
+      render: (_, record) => (
+        <Form.Item name={[record.key.toString(), "total"]}>
+          <Tag>
+            {form.getFieldValue([record.key.toString()])?.title
+              ? total?.find((item) => item.key === record.key.toString())
+                  ?.value ?? 0
+              : 0}
+          </Tag>
         </Form.Item>
       ),
     },
@@ -159,4 +216,4 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   );
 };
 
-export default BookEntryTable;
+export default InvoiceTable;
