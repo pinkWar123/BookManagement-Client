@@ -6,6 +6,7 @@ export const BOOKS: IBook[] = [
     genre: "Self-help, Philosophy",
     author: "Ichiro Kishimi và Fumitake Koga",
     stockQuantity: 114,
+    price: 100,
     id: 1,
   },
   {
@@ -13,6 +14,8 @@ export const BOOKS: IBook[] = [
     genre: "Business, Marketing",
     author: "Jack Trout và Stenve Rivkin",
     stockQuantity: 123,
+    price: 200,
+
     id: 2,
   },
   {
@@ -20,6 +23,8 @@ export const BOOKS: IBook[] = [
     genre: "Fiction, Mystery",
     author: "Keigo Higashino",
     stockQuantity: 231,
+    price: 300,
+
     id: 3,
   },
   {
@@ -27,6 +32,8 @@ export const BOOKS: IBook[] = [
     genre: "Fiction, Romance",
     author: "Haruki Mukarumi",
     stockQuantity: 126,
+    price: 400,
+
     id: 4,
   },
   {
@@ -34,6 +41,8 @@ export const BOOKS: IBook[] = [
     genre: "Fiction, Thriller",
     author: "Keigo Higashino",
     stockQuantity: 152,
+    price: 500,
+
     id: 5,
   },
   {
@@ -41,6 +50,8 @@ export const BOOKS: IBook[] = [
     genre: "Fiction, Romance",
     author: "Nguyễn Nhật Ánh",
     stockQuantity: 26,
+    price: 600,
+
     id: 6,
   },
 ];

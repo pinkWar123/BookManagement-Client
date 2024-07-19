@@ -30,20 +30,13 @@ const TitleDebounceSelect: React.FC<IProps> = ({
     console.log(
       res.map((item) => ({
         label: item.title,
-        value: item.stockQuantity.toString(),
-        author: item.author,
-        genre: item.genre,
-        stockQuantity: item.stockQuantity,
-        title: item.title,
+        ...item,
       }))
     );
     const returnObj = res.map((item) => ({
       label: item.title,
       value: item.stockQuantity.toString(),
-      author: item.author,
-      genre: item.genre,
-      stockQuantity: item.stockQuantity,
-      title: item.title,
+      ...item,
     }));
     setBookValues(returnObj);
     return returnObj;
