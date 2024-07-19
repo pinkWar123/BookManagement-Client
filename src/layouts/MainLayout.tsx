@@ -14,7 +14,12 @@ const MainLayout: FunctionComponent<MainLayoutProps> = () => {
         <Sidebar />
         <Layout>
           <MainHeader />
-          <Content>
+          <Content
+            style={{
+              padding: "40px",
+              marginLeft: "7%",
+            }}
+          >
             <Outlet />
           </Content>
         </Layout>

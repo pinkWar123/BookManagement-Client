@@ -6,10 +6,13 @@ import SignUp from "./pages/Auth/SignUp/SignUp";
 import Login from "./pages/Auth/Login/Login";
 import BookSearchPage from "./pages/MainPage/BookSearch/BookSearchPage";
 import { MainLayoutRoutes } from "./routes/route";
+import useMessage from "antd/es/message/useMessage";
 
 function App() {
+  const message = useMessage();
   return (
     <>
+      {message[1]}
       <BrowserRouter>
         <Routes>
           <Route path="" element={<MainLayout />}>

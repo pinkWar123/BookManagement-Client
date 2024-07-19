@@ -4,6 +4,6 @@ export interface IBook {
   genre: string;
   author: string;
   stockQuantity: number;
-  price: number;
+  price?: number;
   cover?: string;
 }
