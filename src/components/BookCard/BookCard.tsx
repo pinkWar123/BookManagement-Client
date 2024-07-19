@@ -13,12 +13,12 @@ const BookCard: FunctionComponent<BookCardProps> = ({ info }) => {
     <Card
       style={{ width: 300 }}
       extra={<span>Số lượng: {info.stockQuantity}</span>}
-      cover={
-        <img
-          alt="example"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-        />
-      }
+      // cover={
+      //   <img
+      //     alt="example"
+      //     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+      //   />
+      // }
       title={info.title}
       actions={[<Trash2 key="delete" />, <Plus key="add" />]}
     >
