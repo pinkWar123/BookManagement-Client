@@ -1,0 +1,23 @@
+.wrapper {
+  min-height: 100vh;
+  //   background-color: white;
+}
+
+.item-wrapper {
+  padding: 12px 0;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    background-color: #eee;
+  }
+}
+
+.title {
+  font-size: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-left: 12px;
+}
+
+.menu {
+  margin-top: 30px;
+}

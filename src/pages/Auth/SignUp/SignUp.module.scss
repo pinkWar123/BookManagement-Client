@@ -1,0 +1,50 @@
+.brand-title {
+  margin-top: 6px;
+}
+
+.has-account {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.signup-description {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-wrapper {
+  width: 60%;
+  padding: 20px;
+  background-color: #fff;
+  border: 2px solid;
+  //   border-image: linear-gradient(to right, #ff7e5f, #feb47b) 1;
+  border-radius: 15px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
