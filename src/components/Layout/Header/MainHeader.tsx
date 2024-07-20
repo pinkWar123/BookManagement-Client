@@ -1,7 +1,6 @@
 import { Avatar, Button, Flex } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { FunctionComponent } from "react";
-import styles from "./MainHeader.module.scss";
 import { useNavigate } from "react-router-dom";
 interface MainHeaderProps {}
 

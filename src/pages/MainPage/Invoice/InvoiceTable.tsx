@@ -26,12 +26,15 @@ interface DataType {
   total: number;
 }
 
+interface IProps {
+  key: string;
+  value: number;
+}
+
 const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
   const [data, setData] = useState<DataType[] | undefined>();
   const [count, setCount] = useState<number>(1);
-  const [total, setTotal] = useState<
-    [{ key: string; value: number }] | undefined
-  >();
+  const [total, setTotal] = useState<IProps[] | undefined>();
   const [form] = Form.useForm();
   const handleAdd = () => {
     const newData: DataType = {
@@ -78,11 +81,6 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
     form.setFieldValue(id, item);
   };
 
-  const calculateTotal = (record: DataType) => {
-    console.log(record.price);
-    return record.sellQuantity * record.price;
-  };
-
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
@@ -125,9 +123,6 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
             required
             onChange={(e) => {
               const _record = form.getFieldValue(record.key.toString());
-              console.log(_record.price);
-              console.log(e);
-              console.log(e * _record.price);
               form.setFieldValue(record.key.toString(), {
                 ..._record,
                 sellQuantity: e,
