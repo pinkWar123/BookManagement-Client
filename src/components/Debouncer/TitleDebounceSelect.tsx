@@ -24,7 +24,7 @@ const TitleDebounceSelect: React.FC<IProps> = ({
   id,
 }: IProps) => {
   const [bookValues, setBookValues] = useState<BookValue[] | undefined>();
-  const fetchTagList = async (value: string): Promise<BookValue[]> => {
+  const fetchTitleList = async (value: string): Promise<BookValue[]> => {
     if (value === "") return [];
     const res = await findBooksByName(BOOKS, value);
     console.log(
@@ -44,13 +44,11 @@ const TitleDebounceSelect: React.FC<IProps> = ({
   return (
     <DebounceSelect
       maxCount={1}
-      id="tagInput"
       mode="multiple"
       value={items}
       placeholder="Select tags"
-      fetchOptions={fetchTagList}
+      fetchOptions={fetchTitleList}
       onChange={(value) => {
-        console.log("you ve just changed");
         const _value = value as unknown as BookValue[];
         const itemToUpate =
           _value.length === 1
