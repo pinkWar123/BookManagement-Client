@@ -1,4 +1,4 @@
-import { ICustomer } from "../models/Customer";
+import { ICustomer } from "../models/Customer/Customer";
 
 export const CUSTOMERS: ICustomer[] = [
   {

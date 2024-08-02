@@ -1,7 +1,7 @@
 import { App, Button, Flex, Form, Input, InputNumber, Modal } from "antd";
 import { FunctionComponent, useState } from "react";
 import CustomDivider from "../../../components/CustomDivider/CustomDivider";
-import { ICustomer } from "../../../models/Customer";
+import { ICustomer } from "../../../models/Customer/Customer";
 
 interface PaymentModalProps {
   customer?: ICustomer;

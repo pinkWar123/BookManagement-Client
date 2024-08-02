@@ -1,7 +1,7 @@
 import { FunctionComponent, useState } from "react";
 import DebounceSelect from "./DebounceSelect";
 import { CUSTOMERS } from "../../data/customers";
-import { ICustomer } from "../../models/Customer";
+import { ICustomer } from "../../models/Customer/Customer";
 
 interface CustomerDebounceSelectProps {
   onChange: (value: CustomerValue) => void;

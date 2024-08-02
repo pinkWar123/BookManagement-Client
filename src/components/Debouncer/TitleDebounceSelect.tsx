@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IBook } from "../../models/Book";
+import { IBook } from "../../models/Book/Book";
 import { BOOKS } from "../../pages/MainPage/BookSearch/BookData";
 import DebounceSelect from "./DebounceSelect";
 

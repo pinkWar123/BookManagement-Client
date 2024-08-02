@@ -9,21 +9,28 @@ import {
 } from "antd";
 import { FunctionComponent } from "react";
 import { Edit, Trash } from "react-feather";
-import { IUser, Role } from "../../../models/User";
+import { Role } from "../../../models/User/User";
+import { UserViewDto } from "../../../models/User/Dto/userViewDto";
+import { TableParams } from "./UserPage";
+import { TablePaginationConfig } from "antd/es/table/interface";
 
 interface UserTableProps {
-  users: IUser[];
+  users: UserViewDto[];
   removeUser: (id: string) => void;
-  updateUserRole: (record: IUser, newRole: Role) => void;
+  updateUserRole: (record: UserViewDto, newRole: Role) => void;
+  tableParams: TableParams;
+  onChange: (pagination: TablePaginationConfig) => void;
 }
 
 const UserTable: FunctionComponent<UserTableProps> = ({
   users,
   removeUser,
   updateUserRole,
+  tableParams,
+  onChange,
 }) => {
   const { notification } = App.useApp();
-  const columns: TableProps<IUser>["columns"] = [
+  const columns: TableProps<UserViewDto>["columns"] = [
     {
       title: "ID",
       dataIndex: "id",
@@ -45,20 +52,17 @@ const UserTable: FunctionComponent<UserTableProps> = ({
       render: (value) => <span>{value}</span>,
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-      render: (value) => <span>{value}</span>,
-    },
-    {
       title: "Vai trò",
-      dataIndex: "role",
+      dataIndex: "roles",
       key: "total",
       width: "20%",
-      render: (value: Role, record) => (
+      render: (value: Role[], record) => (
         <Select
-          defaultValue={value}
-          options={Object.keys(Role).map((key) => ({ lalel: key, value: key }))}
+          defaultValue={value[0]}
+          options={Object.entries(Role).map(([key, value]) => ({
+            label: key,
+            value: value,
+          }))}
           onChange={(e) => updateUserRole(record, e)}
         />
       ),
@@ -82,25 +86,21 @@ const UserTable: FunctionComponent<UserTableProps> = ({
               </a>
             </Tooltip>
           </Popconfirm>
-          <Popconfirm
-            title="Lưu thay đổi?"
-            onConfirm={() =>
-              notification.success({ message: "Update user succesfully" })
-            }
-          >
-            <Tooltip title="Sửa user">
-              <a>
-                <Edit color="red" size={20} />
-              </a>
-            </Tooltip>
-          </Popconfirm>
         </Flex>
       ),
     },
   ];
   return (
     <>
-      <Table columns={columns} dataSource={users} />
+      <Table
+        columns={columns}
+        dataSource={users}
+        pagination={tableParams.pagination}
+        onChange={(pagination: TablePaginationConfig) => {
+          console.log(pagination);
+          onChange(pagination);
+        }}
+      />
     </>
   );
 };

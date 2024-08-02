@@ -1,44 +1,120 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import UserTable from "./UserTable";
-import { Button, Flex, Input, Select } from "antd";
+import {
+  App,
+  Button,
+  Flex,
+  GetProp,
+  Input,
+  Select,
+  TablePaginationConfig,
+  TableProps,
+} from "antd";
 import { USERS } from "../../../data/users";
-import { IUser, Role } from "../../../models/User";
+import { IUser, Role } from "../../../models/User/User";
+import {
+  callChangeUserRole,
+  callDeleteUser,
+  callGetAllUsers,
+} from "../../../services/userService";
+import { IListUserQuery } from "../../../types/query";
+import { UserViewDto } from "../../../models/User/Dto/userViewDto";
+import { isAxiosError } from "axios";
+import { handleAxiosError } from "../../../helpers/errorHandling";
 
 interface UserPageProps {}
-
-interface UserQuery {
-  fullName?: string;
-  role?: Role;
+export interface TableParams {
+  pagination?: TablePaginationConfig;
 }
-// const findBooksByName = (bookList: IBook[], searchString: string) => {
-//   const regex = new RegExp(searchString, "i"); // 'i' for case-insensitive search
-//   return bookList.filter((book) => regex.test(book.title));
-// };
+
+interface UserFilter {
+  fullName?: string;
+  role?: string;
+}
+
+const buildQuery = (tableParams: TableParams, userFilters: UserFilter) => {
+  const query: IListUserQuery = {
+    pageNumber: tableParams.pagination?.current,
+    pageSize: tableParams.pagination?.pageSize,
+    fullName: userFilters.fullName,
+    role: userFilters.role,
+  };
+
+  return query;
+};
+
 const UserPage: FunctionComponent<UserPageProps> = () => {
-  const [users, setUsers] = useState<IUser[]>(USERS);
-  const [userQueries, setUserQueries] = useState<UserQuery | undefined>({
+  const [users, setUsers] = useState<UserViewDto[]>();
+  const [userFilters, setUserFilters] = useState<UserFilter>({
     fullName: undefined,
     role: undefined,
   });
-  const removeUser = (id: string) => {
-    setUsers((users) => users.filter((user) => user.id !== id));
-  };
-  const updateUserRole = (record: IUser, role: Role) => {
-    setUsers((users) =>
-      users.map((user) => (user.id === record.id ? { ...record, role } : user))
-    );
-  };
-  const searchUsers = () => {
-    let _users = USERS;
-    if (userQueries?.fullName) {
-      const regex = new RegExp(userQueries.fullName, "i");
-      _users = _users.filter((user) => regex.test(user.fullName));
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 2,
+    },
+  });
+
+  const { message } = App.useApp();
+
+  const searchUsers = async (
+    tableParams: TableParams,
+    userFilters: UserFilter
+  ) => {
+    const query = buildQuery(tableParams, userFilters);
+    const res = await callGetAllUsers(query);
+    console.log(res.data);
+    if (res?.data) {
+      setUsers(res.data);
+      setTableParams({
+        pagination: {
+          current: res.pageNumber,
+          pageSize: res.pageSize,
+          total: res.totalRecords,
+        },
+      });
     }
-    if (userQueries?.role) {
-      _users = _users.filter((user) => user.role === userQueries.role);
-    }
-    setUsers(_users);
   };
+
+  useEffect(() => {
+    searchUsers(tableParams, userFilters);
+  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+  const removeUser = async (id: string) => {
+    try {
+      const res = await callDeleteUser(id);
+      if (res.data) {
+        searchUsers(tableParams, userFilters);
+      }
+    } catch (error) {
+      message.error({ content: handleAxiosError(error) });
+    }
+  };
+  const updateUserRole = async (record: IUser, role: Role) => {
+    if (!users) return;
+    try {
+      const res = await callChangeUserRole(record.id, { role: role });
+      console.log(res);
+      const newUser = res.data;
+      setUsers((prev) =>
+        prev?.map((user) => (user.id === newUser.id ? newUser : user))
+      );
+      message.success({ content: "Thay đổi vai trò thành công" });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        message.error({ content: handleAxiosError(error) });
+      }
+    }
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    console.log("Run");
+    setTableParams({ pagination });
+    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+      setUsers([]);
+    }
+  };
+
   return (
     <>
       <Flex gap="small">
@@ -46,7 +122,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
           placeholder="Nhập tên người dùng..."
           style={{ width: "30%" }}
           onChange={(e) =>
-            setUserQueries((prev) => ({
+            setUserFilters((prev) => ({
               ...prev,
               fullName: e.target.value,
             }))
@@ -55,20 +131,44 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
         <Select
           style={{ width: "20%" }}
           placeholder="Vai trò..."
-          options={USERS.map((user) => ({
-            label: user.role,
-            value: user.role,
-          }))}
+          options={[
+            ...USERS.map((user) => ({
+              label: user.role,
+              value: user.role,
+            })),
+            {
+              label: "ALL",
+              value: "ALL",
+            },
+          ]}
+          defaultValue={"ALL"}
           onChange={(value) =>
-            setUserQueries((prev) => ({ ...prev, role: value }))
+            setUserFilters((prev) => ({
+              ...prev,
+              role: value === "ALL" ? undefined : value,
+            }))
           }
         />
-        <Button onClick={searchUsers}>Tìm kiếm</Button>
+        <Button
+          onClick={() => {
+            const tableParams: TableParams = {
+              pagination: {
+                current: 1,
+                pageSize: 2,
+              },
+            };
+            searchUsers(tableParams, userFilters);
+          }}
+        >
+          Tìm kiếm
+        </Button>
       </Flex>
       <UserTable
-        users={users}
+        users={users ?? []}
         removeUser={removeUser}
         updateUserRole={updateUserRole}
+        tableParams={tableParams}
+        onChange={handleTableChange}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { IUser, Role } from "../models/User";
+import { IUser, Role } from "../models/User/User";
 
 export const USERS: IUser[] = [
   {

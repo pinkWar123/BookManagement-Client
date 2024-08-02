@@ -1,6 +1,6 @@
 import { Button, Table, TableProps } from "antd";
 import { FunctionComponent, useState } from "react";
-import { ICustomer } from "../../../models/Customer";
+import { ICustomer } from "../../../models/Customer/Customer";
 import { CUSTOMERS } from "../../../data/customers";
 import PaymentModal from "./PaymentModal";
 

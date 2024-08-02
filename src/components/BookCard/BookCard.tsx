@@ -2,7 +2,7 @@ import { Avatar, Card } from "antd";
 import Meta from "antd/es/card/Meta";
 import { FunctionComponent } from "react";
 import { Plus, Trash2 } from "react-feather";
-import { IBook } from "../../models/Book";
+import { IBook } from "../../models/Book/Book";
 
 interface BookCardProps {
   info: IBook;

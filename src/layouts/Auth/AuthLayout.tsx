@@ -1,14 +1,20 @@
 import { Button, Carousel, Col, Flex, Row } from "antd";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { Book } from "react-feather";
 import styles from "./Auth.module.scss";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getLastSegment } from "../../helpers/location";
+import { useUser } from "../../hooks/useUser";
 interface AuthLayoutProps {}
 
 const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user !== null) navigate("/home");
+  }, [user, navigate]);
 
   const authNavigate = () => {
     const lastSegment = getLastSegment(location);

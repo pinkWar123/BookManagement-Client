@@ -1,4 +1,4 @@
-import { IAdress } from "../interfaces/address";
+import { IAdress } from "../../interfaces/address";
 
 export interface ICustomer {
   customerName: string;
