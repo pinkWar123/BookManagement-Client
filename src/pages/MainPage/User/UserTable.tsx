@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "antd";
 import { FunctionComponent } from "react";
-import { Edit, Trash } from "react-feather";
+import {  Trash } from "react-feather";
 import { Role } from "../../../models/User/User";
 import { UserViewDto } from "../../../models/User/Dto/userViewDto";
 import { TableParams } from "./UserPage";

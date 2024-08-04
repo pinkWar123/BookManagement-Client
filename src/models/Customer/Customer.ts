@@ -1,9 +1,7 @@
-import { IAdress } from "../../interfaces/address";
-
 export interface ICustomer {
   customerName: string;
   totalDebt: number;
-  address: IAdress;
+  address?: string;
   phoneNumber: string;
   email: string;
 }

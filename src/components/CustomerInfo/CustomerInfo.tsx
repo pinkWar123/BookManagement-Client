@@ -1,16 +1,14 @@
 import { Col, Form, Input, Row, Typography } from "antd";
 import { FunctionComponent } from "react";
-import CustomerDebounceSelect, {
-  CustomerValue,
-} from "../Debouncer/CustomerDebounceSelect";
+import CustomerDebounceSelect from "../Debouncer/CustomerDebounceSelect";
 import CustomDivider from "../CustomDivider/CustomDivider";
+import { ICustomer } from "../../models/Customer/Customer";
 
 interface CustomerInfoProps {}
 
 const CustomerInfo: FunctionComponent<CustomerInfoProps> = () => {
   const [form] = Form.useForm();
-  const handleCustomerChange = (value: CustomerValue) => {
-    console.log(value);
+  const handleCustomerChange = (value: ICustomer) => {
     form.setFieldsValue(value);
   };
   return (
@@ -25,11 +23,7 @@ const CustomerInfo: FunctionComponent<CustomerInfoProps> = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name={["address", "address"]}
-              key="address"
-              label="Địa chỉ"
-            >
+            <Form.Item name={"address"} key="address" label="Địa chỉ">
               <Input placeholder="Địa chỉ" disabled />
             </Form.Item>
           </Col>

@@ -1,21 +1,16 @@
 import { FunctionComponent, useState } from "react";
 import DebounceSelect from "./DebounceSelect";
-import { CUSTOMERS } from "../../data/customers";
 import { ICustomer } from "../../models/Customer/Customer";
+import { callGetCustomersByName } from "../../services/customerService";
 
 interface CustomerDebounceSelectProps {
-  onChange: (value: CustomerValue) => void;
+  onChange: (value: ICustomer) => void;
 }
 
 export interface CustomerValue extends ICustomer {
   value: string;
   label: string;
 }
-
-const findCustomerByName = (name: string) => {
-  const regex = new RegExp(name, "i"); // 'i' for case-insensitive search
-  return CUSTOMERS.filter((customer) => regex.test(customer.customerName));
-};
 
 const CustomerDebounceSelect: FunctionComponent<
   CustomerDebounceSelectProps
@@ -26,12 +21,17 @@ const CustomerDebounceSelect: FunctionComponent<
       setCustomers([]);
       return [];
     }
-    const res = await findCustomerByName(value);
-    const returnObj = res.map((item) => ({
-      label: item.customerName,
-      value: item.customerName,
-      ...item,
-    }));
+    const res = await callGetCustomersByName(value);
+    console.log(res.data);
+    const returnObj = res.data.map(
+      (item) =>
+        ({
+          label: item.customerName,
+          value: item.customerName,
+          ...item,
+        } as CustomerValue)
+    );
+
     setCustomers(returnObj);
     return returnObj;
   };
@@ -44,7 +44,18 @@ const CustomerDebounceSelect: FunctionComponent<
         onChange={(value) => {
           const _value = value as unknown as CustomerValue[];
           console.log(customers);
-          if (!_value || _value.length === 0) return;
+          console.log(value);
+          if (!_value || _value.length === 0) {
+            const customerValue: ICustomer = {
+              customerName: "",
+              address: "",
+              email: "",
+              phoneNumber: "",
+              totalDebt: 0,
+            };
+            onChange(customerValue);
+            return;
+          }
           const item: CustomerValue | undefined = customers?.find(
             (_item) => _item.customerName === _value[0].label
           );

@@ -14,6 +14,7 @@ const ConfirmButton: FunctionComponent<ConfirmButtonProps> = ({
 }) => {
   return (
     <Button
+      htmlType="submit"
       loading={loading === undefined ? false : loading}
       type="primary"
       onClick={onClick}
