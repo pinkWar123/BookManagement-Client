@@ -2,10 +2,10 @@ import { Avatar, Card } from "antd";
 import Meta from "antd/es/card/Meta";
 import { FunctionComponent } from "react";
 import { Plus, Trash2 } from "react-feather";
-import { IBook } from "../../models/Book/Book";
+import { BookViewDto } from "../../models/Book/Dto/BookViewDto";
 
 interface BookCardProps {
-  info: IBook;
+  info: BookViewDto;
 }
 
 const BookCard: FunctionComponent<BookCardProps> = ({ info }) => {

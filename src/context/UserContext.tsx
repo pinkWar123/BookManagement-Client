@@ -29,6 +29,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       const accessToken = localStorage.getItem("token");
       if (!accessToken) return;
       const res = await callGetUserByAccessToken(accessToken);
+      console.log(res);
       if (res?.data) {
         setUser(res.data);
       }

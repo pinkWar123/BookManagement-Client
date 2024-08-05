@@ -1,13 +1,13 @@
 import { Col, Form, InputNumber, Modal, Row, Switch } from "antd";
 import { FunctionComponent, useState } from "react";
 import { ModalConfig } from "./RegulationPage";
-import { IRegulation } from "../../../models/IRegulation";
+import { RegulationViewDto } from "../../../models/Regulation/RegulationViewDto";
 
 interface RegulationModalProps {
   modalConfig: ModalConfig;
   onClose: () => void;
   onSubmit: (
-    regulation: IRegulation | undefined,
+    regulation: RegulationViewDto | undefined,
     newValue: number,
     newStatus: boolean
   ) => void;
