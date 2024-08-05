@@ -1,8 +1,12 @@
-import { Button, Table, TableProps } from "antd";
-import { FunctionComponent, useState } from "react";
+import { App, Button, Table, TableProps } from "antd";
+import { FunctionComponent, useEffect, useState } from "react";
 import { ICustomer } from "../../../models/Customer/Customer";
-import { CUSTOMERS } from "../../../data/customers";
 import PaymentModal from "./PaymentModal";
+import useQueryParams from "../../../hooks/useQueryParams";
+import { callGetCustomers } from "../../../services/customerService";
+import { handleAxiosError } from "../../../helpers/errorHandling";
+import { CustomerViewDto } from "../../../models/Customer/Dto/CustomerViewDto";
+import QueryBuilder from "./QueryBuilder";
 
 interface PaymentTableProps {}
 
@@ -15,8 +19,24 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
   const [modalConfig, setModalConfig] = useState<ModalConfig>({
     open: false,
   });
-  const [customers, setCustomers] = useState<ICustomer[]>(CUSTOMERS);
-  const columns: TableProps<ICustomer>["columns"] = [
+  const [customers, setCustomers] = useState<CustomerViewDto[]>();
+  const { getQuery, pagination, setPagination } = useQueryParams();
+  const { message } = App.useApp();
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        console.log(getQuery());
+        const res = await callGetCustomers(getQuery());
+        console.log(res);
+        setCustomers(res.data);
+      } catch (error) {
+        message.error({ content: handleAxiosError(error) });
+      }
+    };
+    fetchCustomers();
+  }, [getQuery, message]);
+  const columns: TableProps<CustomerViewDto>["columns"] = [
     {
       title: "ID",
       dataIndex: "id",
@@ -80,7 +100,16 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
   };
   return (
     <>
-      <Table columns={columns} dataSource={customers} />
+      <QueryBuilder />
+      <Table
+        columns={columns}
+        dataSource={customers}
+        pagination={{
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          current: pagination.pageNumber,
+        }}
+      />
       {modalConfig.open && (
         <PaymentModal
           customer={modalConfig.value}

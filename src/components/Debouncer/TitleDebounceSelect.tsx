@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IBook } from "../../models/Book/Book";
-import { BOOKS } from "../../pages/MainPage/BookSearch/BookData";
 import DebounceSelect from "./DebounceSelect";
+import { callGetAllBooks } from "../../services/bookService";
 
 export interface BookValue extends IBook {
   label: string;
@@ -13,10 +13,6 @@ interface IProps {
   onChange: (id: string, value?: BookValue) => void;
   id: string;
 }
-const findBooksByName = (bookList: IBook[], searchString: string) => {
-  const regex = new RegExp(searchString, "i"); // 'i' for case-insensitive search
-  return bookList.filter((book) => regex.test(book.title));
-};
 
 const TitleDebounceSelect: React.FC<IProps> = ({
   items,
@@ -26,18 +22,23 @@ const TitleDebounceSelect: React.FC<IProps> = ({
   const [bookValues, setBookValues] = useState<BookValue[] | undefined>();
   const fetchTitleList = async (value: string): Promise<BookValue[]> => {
     if (value === "") return [];
-    const res = await findBooksByName(BOOKS, value);
+    const res = await callGetAllBooks({
+      pageNumber: 1,
+      pageSize: 5,
+      title: value,
+    });
     console.log(
-      res.map((item) => ({
+      res.data.map((item) => ({
         label: item.title,
         ...item,
       }))
     );
-    const returnObj = res.map((item) => ({
+    const returnObj = res.data.map((item) => ({
       label: item.title,
-      value: item.stockQuantity.toString(),
+      value: item.bookId.toString(),
       ...item,
     }));
+    console.log(returnObj);
     setBookValues(returnObj);
     return returnObj;
   };

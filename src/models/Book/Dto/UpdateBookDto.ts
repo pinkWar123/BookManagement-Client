@@ -1,8 +1,7 @@
-export interface BookViewDto {
-  bookId: number;
+export interface UpdateBookDto {
   title: string;
-  genre: string;
   author: string;
+  genre: string;
   stockQuantity: number;
   price: number;
 }

@@ -1,4 +1,4 @@
-import { App, Flex, Form, Input, Modal } from "antd";
+import { App, Flex, Form, Input, InputNumber, Modal, Select } from "antd";
 import TypedInputNumber from "antd/es/input-number";
 import { FunctionComponent, useState } from "react";
 import CancelButton from "../../../components/Button/CancelButton";
@@ -6,6 +6,7 @@ import ConfirmButton from "../../../components/Button/ConfirmButton";
 import { CreateBookDto } from "../../../models/Book/Dto/CreateBookDto";
 import { handleAxiosError } from "../../../helpers/errorHandling";
 import { callCreateNewBook } from "../../../services/bookService";
+import { BOOK_GENRES } from "../../../constants/bookGenres";
 
 interface AddBookModalProps {
   open: boolean;
@@ -47,12 +48,14 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
       onClose={closeModal}
       onCancel={closeModal}
       footer={<></>}
+      title="Thêm sách"
     >
       <Form
         form={form}
         layout="vertical"
         initialValues={{
           stockQuantity: 0,
+          price: 0,
         }}
       >
         <Form.Item name="title" key="title" label="Tên sách:" required>
@@ -70,7 +73,16 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
           <TypedInputNumber placeholder="Nhập số lượng sách..." min={0} />
         </Form.Item>
         <Form.Item name="genre" key="genre" label="Thể loại" required>
-          <Input placeholder="Nhập thể loại..." />
+          <Select
+            placeholder="Nhập thể loại..."
+            options={BOOK_GENRES.map((bookGenre) => ({
+              label: bookGenre,
+              value: bookGenre,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item name="price" key={"price"} label="Giá bán" required>
+          <InputNumber min={0} />
         </Form.Item>
         <Flex gap="small">
           <Form.Item>

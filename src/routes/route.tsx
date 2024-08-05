@@ -1,5 +1,4 @@
 import HomePage from "../pages/MainPage/Home/HomePage";
-import BookSearchPage from "../pages/MainPage/BookSearch/BookSearchPage";
 import {
   BOOK_ENTRY_PAGE_URL,
   BOOK_PAGE_URL,
@@ -16,6 +15,7 @@ import PaymentPage from "../pages/MainPage/Payment/PaymentPage";
 import ReportPage from "../pages/MainPage/Report/ReportPage";
 import RegulationPage from "../pages/MainPage/Regulation/RegulationPage";
 import UserPage from "../pages/MainPage/User/UserPage";
+import BookSearchPage from "../pages/MainPage/BookSearch/BookSearchPage";
 
 export const MainLayoutRoutes = [
   {

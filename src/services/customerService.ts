@@ -21,3 +21,13 @@ export const callGetCustomersByName = async (customerName: string) => {
     )
   ).data;
 };
+
+export const callGetCustomers = async (
+  query: Record<string, string | number | boolean>
+) => {
+  return (
+    await axiosInstance.get<IPagedResponse<CustomerViewDto>>(`customers`, {
+      params: query,
+    })
+  ).data;
+};

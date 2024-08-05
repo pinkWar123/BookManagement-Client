@@ -1,8 +1,18 @@
-import { App, Button, Col, Flex, Input, Pagination, Row } from "antd";
+import {
+  App,
+  Button,
+  Col,
+  Empty,
+  Flex,
+  Input,
+  Pagination,
+  Row,
+  Select,
+} from "antd";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import BookCard from "../../../components/BookCard/BookCard";
 import styles from "./BookSearchPage.module.scss";
-import { Plus } from "react-feather";
+import { Plus, Search } from "react-feather";
 import AddBookModal from "./AddBookModal";
 import { BookViewDto } from "../../../models/Book/Dto/BookViewDto";
 import { callGetAllBooks } from "../../../services/bookService";
@@ -13,12 +23,21 @@ import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/pagination";
+import { BOOK_GENRES } from "../../../constants/bookGenres";
 interface BookSearchPageProps {}
+interface BookQuery {
+  title: string;
+  genre: string;
+}
 
 const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
   const navigate = useNavigate();
   const [openAddModal, setAddModal] = useState<boolean>(false);
   const { message } = App.useApp();
+  const [bookQuery, setBookQuery] = useState<BookQuery>({
+    title: "",
+    genre: "",
+  });
   const { handleChangePage, pagination, setPagination, getQuery } =
     useQueryParams();
   const [books, setBooks] = useState<BookViewDto[]>();
@@ -42,27 +61,56 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
     fetchBooks();
   }, [fetchBooks]);
 
-  const handleSearchByTitle = (title: string) => {
-    navigate(
-      `/book?pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}&title=${title}`
-    );
+  const handleSearch = () => {
+    let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}`;
+    if (bookQuery.genre !== "") queryString += `&genre=${bookQuery.genre}`;
+    if (bookQuery.title !== "") queryString += `&title=${bookQuery.title}`;
+    navigate(`/book?${queryString}`);
   };
 
   return (
     <>
-      <AddBookModal
-        open={openAddModal}
-        closeModal={() => setAddModal(false)}
-        fetchBook={fetchBooks}
-      />
-      <Flex gap="large">
-        <Input.Search
-          placeholder="Tìm kiếm sách..."
-          className={styles["search-bar"]}
-          onSearch={handleSearchByTitle}
+      {openAddModal && (
+        <AddBookModal
+          open={true}
+          closeModal={() => setAddModal(false)}
+          fetchBook={fetchBooks}
         />
+      )}
+      <Flex gap="large">
         <Button icon={<Plus />} onClick={() => setAddModal(true)}>
           Thêm sách mới
+        </Button>
+        <Input.Search
+          placeholder="Nhập tên sách..."
+          className={styles["search-bar"]}
+          value={bookQuery.title}
+          onChange={(e) =>
+            setBookQuery((prev) => ({ ...prev, title: e.target.value }))
+          }
+        />
+        <Select
+          className={styles["genre"]}
+          placeholder="Chọn thể loại"
+          value={bookQuery.genre}
+          onChange={(value) =>
+            setBookQuery((prev) => ({ ...prev, genre: value }))
+          }
+          options={BOOK_GENRES.map((bookGenre) =>
+            bookGenre === "Tất cả"
+              ? { value: "", label: bookGenre }
+              : {
+                  value: bookGenre,
+                  label: bookGenre,
+                }
+          )}
+        />
+        <Button
+          icon={<Search className={styles["search-icon"]} />}
+          type="primary"
+          onClick={handleSearch}
+        >
+          Tìm kiếm
         </Button>
       </Flex>
       <Flex justify="center" className={styles["second-container"]}>
@@ -73,11 +121,16 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
               key={`${book.title}-${book.bookId}`}
               style={{ marginBottom: "40px" }}
             >
-              <BookCard info={book} />
+              <BookCard info={book} fetchBooks={fetchBooks} />
             </Col>
           ))}
         </Row>
       </Flex>
+      {books?.length === 0 && (
+        <Flex justify="center">
+          <Empty />
+        </Flex>
+      )}
       <Pagination
         defaultCurrent={pagination.pageNumber}
         current={pagination.pageNumber}

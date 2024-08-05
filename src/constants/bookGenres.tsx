@@ -1,0 +1,18 @@
+export const BOOK_GENRES = [
+  "Tất cả",
+  "Giả tưởng",
+  "Khoa học viễn tưởng",
+  "Bí ẩn",
+  "Kinh dị",
+  "Lãng mạn",
+  "Tiểu thuyết lịch sử",
+  "Tiểu sử",
+  "Hồi ký",
+  "Self-help",
+  "Thiếu niên",
+  "Phản địa đàng",
+  "Tội phạm",
+  "Phiêu lưu",
+  "Tâm lý",
+  "Khoa học",
+];

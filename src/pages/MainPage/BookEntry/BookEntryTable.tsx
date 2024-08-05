@@ -73,10 +73,13 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       dataIndex: "title",
       key: "title",
       width: "30%",
-      render: (_, record) => {
+      render: (value, record) => {
         console.log(record.key.toString());
         return (
-          <Form.Item name={[record.key.toString(), "title"]}>
+          <Form.Item
+            name={[record.key.toString(), "title"]}
+            key={`opt-${value.bookId}`}
+          >
             <TitleDebounceSelect
               id={record.key.toString()}
               onChange={handleSelect}
