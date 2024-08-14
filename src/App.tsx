@@ -4,10 +4,10 @@ import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/Auth/AuthLayout";
 import SignUp from "./pages/Auth/SignUp/SignUp";
 import Login from "./pages/Auth/Login/Login";
-import BookSearchPage from "./pages/MainPage/BookSearch/BookSearchPage";
 import { MainLayoutRoutes } from "./routes/route";
 import useMessage from "antd/es/message/useMessage";
 import { UserProvider } from "./context/UserContext";
+import ErrorPage from "./components/ErrorPage";
 
 function App() {
   const message = useMessage();
@@ -17,8 +17,11 @@ function App() {
       <BrowserRouter>
         <UserProvider>
           <Routes>
-            <Route path="" element={<MainLayout />}>
-              <Route path="book" element={<BookSearchPage />} />
+            <Route
+              path=""
+              element={<MainLayout />}
+              errorElement={<ErrorPage />}
+            >
               {MainLayoutRoutes.map((page) => (
                 <Route
                   path={page.url}
@@ -31,6 +34,7 @@ function App() {
               <Route path="signup" element={<SignUp />} />
               <Route path="login" element={<Login />} />
             </Route>
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>

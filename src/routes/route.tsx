@@ -16,38 +16,77 @@ import ReportPage from "../pages/MainPage/Report/ReportPage";
 import RegulationPage from "../pages/MainPage/Regulation/RegulationPage";
 import UserPage from "../pages/MainPage/User/UserPage";
 import BookSearchPage from "../pages/MainPage/BookSearch/BookSearchPage";
+import BookPageGuard from "../components/Guard/BookPageGuard";
+import BookEntryGuard from "../components/Guard/BookEntryGuard";
+import InvoiceGuard from "../components/Guard/InvoiceGuard";
+import PaymentGuard from "../components/Guard/PaymentGuard";
+import ReportGuard from "../components/Guard/ReportGuard";
+import RegulationGuard from "../components/Guard/RegulationGuard";
+import UserGuard from "../components/Guard/UserGuard";
 
 export const MainLayoutRoutes = [
   {
     url: HOME_PAGE_URL,
-    component: <HomePage />,
+    component: (
+      <BookPageGuard>
+        <HomePage />
+      </BookPageGuard>
+    ),
   },
   {
     url: BOOK_PAGE_URL,
-    component: <BookSearchPage />,
+    component: (
+      <BookPageGuard>
+        <BookSearchPage />
+      </BookPageGuard>
+    ),
   },
   {
     url: BOOK_ENTRY_PAGE_URL,
-    component: <BookEntryPage />,
+    component: (
+      <BookEntryGuard>
+        <BookEntryPage />
+      </BookEntryGuard>
+    ),
   },
   {
     url: INVOICE_PAGE_URL,
-    component: <InvoicePage />,
+    component: (
+      <InvoiceGuard>
+        <InvoicePage />
+      </InvoiceGuard>
+    ),
   },
   {
     url: PAYMENT_PAGE_URL,
-    component: <PaymentPage />,
+    component: (
+      <PaymentGuard>
+        <PaymentPage />
+      </PaymentGuard>
+    ),
   },
   {
     url: REPORT_PAGE_URL,
-    component: <ReportPage />,
+    component: (
+      <ReportGuard>
+        <ReportPage />
+      </ReportGuard>
+    ),
   },
   {
     url: REGULATION_PAGE_URL,
-    component: <RegulationPage />,
+    component: (
+      <RegulationGuard>
+        <RegulationPage />
+      </RegulationGuard>
+    ),
   },
   {
     url: USER_PAGE_URL,
-    component: <UserPage />,
+    component: (
+      <UserGuard>
+        <UserPage />
+      </UserGuard>
+    ),
   },
 ];

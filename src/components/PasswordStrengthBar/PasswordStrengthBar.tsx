@@ -9,8 +9,7 @@ const PasswordStrengthbar: FunctionComponent<PasswordStrengthbarProps> = ({
 }) => {
   const calculateStrength = () => {
     let strength = 0;
-    if (password.length > 6) strength += 1;
-    if (password.length > 10) strength += 1;
+    if (password.length > 11) strength += 1;
     if (/[A-Z]/.test(password)) strength += 1;
     if (/[0-9]/.test(password)) strength += 1;
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
@@ -25,6 +24,7 @@ const PasswordStrengthbar: FunctionComponent<PasswordStrengthbarProps> = ({
       case 3:
         return "yellow";
       case 4:
+      case 5:
         return "green";
       default:
         return "gray";
@@ -40,9 +40,8 @@ const PasswordStrengthbar: FunctionComponent<PasswordStrengthbarProps> = ({
       case 3:
         return "75%";
       case 4:
+      case 5:
         return "100%";
-      default:
-        return "0%";
     }
   };
   const getDescription = () => {
@@ -54,6 +53,7 @@ const PasswordStrengthbar: FunctionComponent<PasswordStrengthbarProps> = ({
       case 3:
         return <span style={{ color: "yellow" }}>Mạnh</span>;
       case 4:
+      case 5:
         return <span style={{ color: "green" }}>Rất mạnh</span>;
       default:
         return <span style={{ color: "grey" }}>Rất yếu</span>;

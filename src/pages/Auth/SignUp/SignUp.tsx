@@ -5,6 +5,7 @@ import styles from "./SignUp.module.scss";
 import PasswordStrengthbar from "../../../components/PasswordStrengthBar/PasswordStrengthBar";
 import { callRegister, doesUsernameExist } from "../../../services/userService";
 import { useNavigate } from "react-router-dom";
+import { passwordRule } from "../rule";
 interface SignUpProps {}
 
 const SignUp: FunctionComponent<SignUpProps> = () => {
@@ -12,6 +13,7 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
   const navigate = useNavigate();
   const { notification } = App.useApp();
   const [form] = Form.useForm();
+  const password = Form.useWatch("password", form);
   return (
     <div>
       <Flex align="center" justify="center" style={{ marginTop: "-40px" }}>
@@ -50,6 +52,7 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
             label="Tên tài khoản"
             name="username"
             key="username"
+            validateDebounce={1000}
             rules={[
               {
                 required: true,
@@ -88,39 +91,12 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
             label="Mật khẩu"
             name="password"
             key="password"
-            rules={[
-              {
-                required: true,
-                message: "Password không được để trống",
-              },
-              {
-                min: 12,
-                message: "Password phải chứa ít nhất 12 kí tự",
-              },
-              {
-                pattern: /[A-Z]/,
-                message: "Password phải chứa ít nhất 1 kí tự in hoa",
-              },
-              {
-                pattern: /[a-z]/,
-                message: "Password phải chứa ít nhất 1 kí tự viết thường",
-              },
-              {
-                pattern: /[0-9]/,
-                message: "Password phải chứa ít nhất 1 chữ số",
-              },
-              {
-                pattern: /[^A-Za-z0-9]/,
-                message: "Password phải chứa ít nhất 1 kí tự đặc biệt",
-              },
-            ]}
+            rules={passwordRule}
           >
             <Input type="password" />
           </Form.Item>
           <Form.Item>
-            <PasswordStrengthbar
-              password={form.getFieldValue("password") ?? ""}
-            />
+            <PasswordStrengthbar password={password ?? ""} />
           </Form.Item>
 
           <Form.Item

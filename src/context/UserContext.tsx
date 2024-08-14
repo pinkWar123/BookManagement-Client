@@ -52,7 +52,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (axios.isAxiosError(error)) {
         console.log(error.response?.data?.message);
         notification.error({
-          message: error.response?.data?.message ?? "Đăng nhập thất bại",
+          message: "Tên đăng nhập hoặc mật khẩu không đúng",
         });
       }
     }

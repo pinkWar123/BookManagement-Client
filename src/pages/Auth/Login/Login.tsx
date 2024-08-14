@@ -5,6 +5,7 @@ import Input from "antd/es/input/Input";
 import { LoginDto } from "../../../models/User/Dto/loginDto";
 import { useUser } from "../../../hooks/useUser";
 import { isAxiosError } from "axios";
+import { passwordRule } from "../rule";
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
@@ -25,14 +26,14 @@ const Login: FunctionComponent<LoginProps> = () => {
   return (
     <>
       <Flex justify="center" style={{ marginTop: "60px" }}>
-        <Typography.Title level={3}>Đăng ký tài khoản</Typography.Title>
+        <Typography.Title level={3}>Đăng nhập</Typography.Title>
       </Flex>
       <Flex justify="center">
         <div className={styles["signup-description"]}>
           VUI LÒNG ĐĂNG KÝ TÀI KHOẢN ĐỂ ĐĂNG NHẬP VÀO HỆ THỐNG
         </div>
       </Flex>
-      <Flex justify="center" style={{ marginTop: "100px" }}>
+      <Flex justify="center" style={{ marginTop: "50px" }}>
         <Form
           layout="vertical"
           className={styles["form-wrapper"]}
@@ -40,11 +41,28 @@ const Login: FunctionComponent<LoginProps> = () => {
             handleLogin(value);
           }}
         >
-          <Form.Item label="Tên tài khoản" name="username" key="username">
+          <Form.Item
+            label="Tên đăng nhập"
+            name="username"
+            key="username"
+            required
+            rules={[
+              {
+                required: true,
+                message: "Tên đăng nhập không được để trống",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Mật khẩu" name="password" key="password">
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            key="password"
+            required
+            rules={passwordRule}
+          >
             <Input type="password" />
           </Form.Item>
 
