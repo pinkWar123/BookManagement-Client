@@ -1,19 +1,21 @@
 import { Button, Checkbox, Flex, Form, Input, Select } from "antd";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
+import useQueryParams from "../../../hooks/useQueryParams";
 
 interface QueryBuilderProps {}
 
 const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
   const [customerName, setCustomerName] = useState<string>("");
   const navigate = useNavigate();
+  const { params } = useQueryParams();
+  console.log(params && params["SortBy"]);
   const [sortBy, setSortBy] = useState<Record<string, boolean>>({
     customerName: false,
     totalDebt: false,
   });
   const [isDescending, setIsDescending] = useState<boolean>(false);
-
   const handleSearch = () => {
     let queryString = `pageNumber=1&pageSize=10`;
     queryString += `&IsDescending=${isDescending}`;
@@ -29,6 +31,15 @@ const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
     navigate(`/payment?${queryString}`);
   };
 
+  useEffect(() => {
+    setSortBy({
+      customerName:
+        params && params["SortBy"]?.includes("CustomerName") ? true : false,
+      totalDebt:
+        params && params["SortBy"]?.includes("TotalDebt") ? true : false,
+    });
+  }, [params]);
+
   return (
     <Flex gap="large">
       <Form.Item>
@@ -41,6 +52,7 @@ const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
       <Form.Item>Bộ lọc:</Form.Item>
       <Form.Item>
         <Checkbox
+          checked={sortBy["customerName"]}
           key={"name"}
           onChange={(e) =>
             setSortBy((prev) => ({ ...prev, customerName: e.target.checked }))
@@ -51,6 +63,7 @@ const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
       </Form.Item>
       <Form.Item>
         <Checkbox
+          checked={sortBy["totalDebt"]}
           key={"totalDebt"}
           onChange={(e) =>
             setSortBy((prev) => ({ ...prev, totalDebt: e.target.checked }))

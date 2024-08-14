@@ -1,11 +1,15 @@
 import { FunctionComponent, useState } from "react";
-import InvoiceTable from "./InvoiceTable";
+import InvoiceTable, { DataType } from "./InvoiceTable";
 import CustomerInfo from "../../../components/CustomerInfo/CustomerInfo";
 import CustomDivider from "../../../components/CustomDivider/CustomDivider";
-import { Button, Flex, Typography } from "antd";
+import { App, Button, Flex, Form, Typography } from "antd";
 import { Plus } from "react-feather";
 import styles from "./Invoice.module.scss";
 import AddCustomerModal from "./AddCustomerModal";
+import { CreateInvoiceDto } from "../../../models/Invoice/Dto/CreateInvoiceDto";
+import { callCreateInvoce } from "../../../services/invoiceService";
+import { getToday } from "../../../helpers/date";
+import { handleAxiosError } from "../../../helpers/errorHandling";
 
 interface InvoicePageProps {}
 
@@ -13,6 +17,40 @@ const InvoicePage: FunctionComponent<InvoicePageProps> = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  const [data, setData] = useState<DataType[] | undefined>();
+  const { message } = App.useApp();
+  const [form] = Form.useForm();
+  const handleCreateInvoice = async () => {
+    const values = form.getFieldValue("bookList");
+    console.log(values);
+    const bookList = Object.values(values).map((value) => {
+      const _value = value as unknown as DataType;
+      return {
+        bookId: _value.id,
+        quantity: _value.sellQuantity,
+      };
+    });
+    const customerId = form.getFieldValue(["customer", "id"]);
+    if (!customerId) {
+      message.error({ content: "Customer không được để trống" });
+      return;
+    }
+    const createInvoiceDto: CreateInvoiceDto = {
+      customerId,
+      invoiceDate: getToday(),
+      invoiceDetails: bookList,
+    };
+    try {
+      const res = await callCreateInvoce(createInvoiceDto);
+      if (res.data) {
+        message.success({ content: "Tạo hóa đơn thành công" });
+        form.resetFields();
+        setData([]);
+      }
+    } catch (error) {
+      message.error({ content: handleAxiosError(error) });
+    }
+  };
 
   return (
     <>
@@ -27,9 +65,10 @@ const InvoicePage: FunctionComponent<InvoicePageProps> = () => {
           Thêm khách hàng
         </Button>
       </Flex>
-      <CustomerInfo />
+      <CustomerInfo form={form} />
       <CustomDivider />
-      <InvoiceTable />
+      <InvoiceTable form={form} data={data} setData={setData} />
+      <Button onClick={handleCreateInvoice}>Tạo hóa đơn</Button>
       {openModal && <AddCustomerModal onClose={handleCloseModal} />}
     </>
   );

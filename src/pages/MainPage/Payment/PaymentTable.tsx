@@ -1,18 +1,20 @@
 import { App, Button, Table, TableProps } from "antd";
-import { FunctionComponent, useEffect, useState } from "react";
-import { ICustomer } from "../../../models/Customer/Customer";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import PaymentModal from "./PaymentModal";
 import useQueryParams from "../../../hooks/useQueryParams";
 import { callGetCustomers } from "../../../services/customerService";
 import { handleAxiosError } from "../../../helpers/errorHandling";
 import { CustomerViewDto } from "../../../models/Customer/Dto/CustomerViewDto";
 import QueryBuilder from "./QueryBuilder";
+import { CreatePaymentReceiptDto } from "../../../models/PaymentReceipt/CreatePaymentReceiptDto";
+import { getToday } from "../../../helpers/date";
+import { createPaymentReceipt } from "../../../services/paymentReceiptService";
 
 interface PaymentTableProps {}
 
 interface ModalConfig {
   open: boolean;
-  value?: ICustomer;
+  value?: CustomerViewDto;
 }
 
 const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
@@ -20,22 +22,23 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
     open: false,
   });
   const [customers, setCustomers] = useState<CustomerViewDto[]>();
-  const { getQuery, pagination, setPagination } = useQueryParams();
+  const { getQuery, pagination } = useQueryParams();
   const { message } = App.useApp();
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        console.log(getQuery());
-        const res = await callGetCustomers(getQuery());
-        console.log(res);
-        setCustomers(res.data);
-      } catch (error) {
-        message.error({ content: handleAxiosError(error) });
-      }
-    };
-    fetchCustomers();
+  const fetchCustomers = useCallback(async () => {
+    try {
+      console.log(getQuery());
+      const res = await callGetCustomers(getQuery());
+      console.log(res);
+      setCustomers(res.data);
+    } catch (error) {
+      message.error({ content: handleAxiosError(error) });
+    }
   }, [getQuery, message]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
   const columns: TableProps<CustomerViewDto>["columns"] = [
     {
       title: "ID",
@@ -69,6 +72,7 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
       render: (_, record) => (
         <>
           <Button
+            disabled={record.totalDebt <= 0}
             type="primary"
             onClick={() =>
               setModalConfig({
@@ -86,17 +90,27 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
   const handleClose = () => {
     setModalConfig({ open: false });
   };
-  const handleCharge = (amount: number, customer: ICustomer) => {
-    setCustomers((customers) =>
-      customers.map((_customer) =>
-        _customer === customer
-          ? {
-              ...customer,
-              totalDebt: customer.totalDebt - amount,
-            }
-          : _customer
-      )
-    );
+  const handleCharge = async (amount: number, customer: CustomerViewDto) => {
+    console.log(amount);
+    console.log(customer.id);
+    try {
+      const createPaymentReceiptDto: CreatePaymentReceiptDto = {
+        receiptDate: getToday(),
+        amount,
+        customerId: customer.id,
+      };
+      const res = await createPaymentReceipt(createPaymentReceiptDto);
+      console.log(res.data);
+      if (res.data) {
+        message.success({
+          content: `Đã thu tiền khách hàng ${customer.customerName} với số tiền ${amount}`,
+        });
+        await fetchCustomers();
+        handleClose();
+      }
+    } catch (error) {
+      message.error({ content: handleAxiosError(error) });
+    }
   };
   return (
     <>

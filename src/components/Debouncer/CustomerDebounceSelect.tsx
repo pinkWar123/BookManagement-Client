@@ -1,13 +1,13 @@
 import { FunctionComponent, useState } from "react";
 import DebounceSelect from "./DebounceSelect";
-import { ICustomer } from "../../models/Customer/Customer";
 import { callGetCustomersByName } from "../../services/customerService";
+import { CustomerViewDto } from "../../models/Customer/Dto/CustomerViewDto";
 
 interface CustomerDebounceSelectProps {
-  onChange: (value: ICustomer) => void;
+  onChange: (value: CustomerViewDto) => void;
 }
 
-export interface CustomerValue extends ICustomer {
+export interface CustomerValue extends CustomerViewDto {
   value: string;
   label: string;
 }
@@ -46,12 +46,13 @@ const CustomerDebounceSelect: FunctionComponent<
           console.log(customers);
           console.log(value);
           if (!_value || _value.length === 0) {
-            const customerValue: ICustomer = {
+            const customerValue: CustomerViewDto = {
               customerName: "",
               address: "",
               email: "",
               phoneNumber: "",
               totalDebt: 0,
+              id: 0,
             };
             onChange(customerValue);
             return;

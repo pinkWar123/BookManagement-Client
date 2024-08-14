@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Form,
+  FormInstance,
   Input,
   Popconfirm,
   Table,
@@ -15,15 +16,21 @@ import TitleDebounceSelect, {
 } from "../../../components/Debouncer/TitleDebounceSelect";
 import TypedInputNumber from "antd/es/input-number";
 
-interface InvoiceTableTableProps {}
+interface InvoiceTableTableProps {
+  form: FormInstance<unknown>;
+  data: DataType[] | undefined;
+  setData: React.Dispatch<React.SetStateAction<DataType[] | undefined>>;
+}
 
-interface DataType {
+export interface DataType {
   order: number;
   key: number;
   title: string;
   sellQuantity: number;
   price: number;
   total: number;
+  id: number;
+  stockQuantity: number;
 }
 
 interface IProps {
@@ -31,11 +38,13 @@ interface IProps {
   value: number;
 }
 
-const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
-  const [data, setData] = useState<DataType[] | undefined>();
+const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
+  form,
+  data,
+  setData,
+}) => {
   const [count, setCount] = useState<number>(1);
   const [total, setTotal] = useState<IProps[] | undefined>();
-  const [form] = Form.useForm();
   const handleAdd = () => {
     const newData: DataType = {
       title: "",
@@ -44,6 +53,8 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
       sellQuantity: 0,
       price: 0,
       total: 0,
+      id: 0,
+      stockQuantity: 0,
     };
     setData((prev) => {
       if (!prev) return [newData];
@@ -78,7 +89,8 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
   };
   const handleSelect = (id: string, item?: BookValue) => {
     console.log("change");
-    form.setFieldValue(id, item);
+    console.log(item);
+    form.setFieldValue(["bookList", id], item);
   };
 
   const columns: TableProps<DataType>["columns"] = [
@@ -98,11 +110,10 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
       title: "Tên sách",
       dataIndex: "title",
       key: "title",
-      width: "30%",
+      width: "35%",
       render: (_, record) => {
-        console.log(record.key.toString());
         return (
-          <Form.Item name={[record.key.toString(), "title"]}>
+          <Form.Item name={["bookList", record.key.toString(), "title"]}>
             <TitleDebounceSelect
               id={record.key.toString()}
               onChange={handleSelect}
@@ -115,17 +126,31 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
       title: "Số lượng",
       dataIndex: "sellQuantity",
       key: "sellQuantity",
+      width: "5%",
       render: (_, record) => (
-        <Form.Item name={[record.key.toString(), "sellQuantity"]}>
+        <Form.Item
+          name={["bookList", record.key.toString(), "sellQuantity"]}
+          rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+        >
           <TypedInputNumber
             type="number"
-            min={0}
+            min={1}
+            max={form.getFieldValue([
+              "bookList",
+              record.key.toString(),
+              "stockQuantity",
+            ])}
             required
             onChange={(e) => {
-              const _record = form.getFieldValue(record.key.toString());
-              form.setFieldValue(record.key.toString(), {
+              const _record = form.getFieldValue([
+                "bookList",
+                record.key.toString(),
+              ]);
+              console.log(_record.price);
+              form.setFieldValue(["bookList", record.key.toString()], {
                 ..._record,
                 sellQuantity: e,
+                total: (e ?? 0) * _record.price,
               });
               setTotal((prev) => {
                 const newItem = {
@@ -146,11 +171,23 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
       ),
     },
     {
+      title: "Tồn kho",
+      dataIndex: "stockQuantity",
+      key: "stockQuantity",
+      width: "10%",
+      render: (_, record) => (
+        <Form.Item name={["bookList", record.key.toString(), "stockQuantity"]}>
+          <Input disabled variant="borderless" />
+        </Form.Item>
+      ),
+    },
+    {
       title: "Đơn giá",
       dataIndex: "price",
       key: "price",
+      width: "20%",
       render: (_, record) => (
-        <Form.Item name={[record.key.toString(), "price"]}>
+        <Form.Item name={["bookList", record.key.toString(), "price"]}>
           <Input disabled variant="borderless" />
         </Form.Item>
       ),
@@ -159,12 +196,13 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = () => {
       title: "Thành tiền",
       dataIndex: "total",
       key: "total",
+      width: "20%",
+
       render: (_, record) => (
-        <Form.Item name={[record.key.toString(), "total"]}>
+        <Form.Item name={["bookList", record.key.toString(), "total"]}>
           <Tag>
-            {form.getFieldValue([record.key.toString()])?.title
-              ? total?.find((item) => item.key === record.key.toString())
-                  ?.value ?? 0
+            {form.getFieldValue(["bookList", record.key.toString()])?.title
+              ? total?.find((x) => x.key === record.key.toString())?.value
               : 0}
           </Tag>
         </Form.Item>

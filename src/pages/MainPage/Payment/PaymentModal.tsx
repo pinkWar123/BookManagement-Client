@@ -1,12 +1,12 @@
 import { App, Button, Flex, Form, Input, InputNumber, Modal } from "antd";
 import { FunctionComponent, useState } from "react";
 import CustomDivider from "../../../components/CustomDivider/CustomDivider";
-import { ICustomer } from "../../../models/Customer/Customer";
+import { CustomerViewDto } from "../../../models/Customer/Dto/CustomerViewDto";
 
 interface PaymentModalProps {
-  customer?: ICustomer;
+  customer?: CustomerViewDto;
   handleClose: () => void;
-  onCharge: (amount: number, customer: ICustomer) => void;
+  onCharge: (amount: number, customer: CustomerViewDto) => void;
 }
 const layout = {
   labelCol: { span: 5 },
@@ -17,7 +17,7 @@ const PaymentModal: FunctionComponent<PaymentModalProps> = ({
   handleClose,
   onCharge,
 }) => {
-  const { modal, message } = App.useApp();
+  const { modal } = App.useApp();
   const [payAmount, setPayAmount] = useState<number>(0);
   if (!customer) return;
   const handleCharge = () => {
@@ -25,8 +25,6 @@ const PaymentModal: FunctionComponent<PaymentModalProps> = ({
       title: "Bạn có chắc chắn thu tiền không?",
       onOk: () => {
         onCharge(payAmount, customer);
-        message.success({ content: "Thu tiền thành công" });
-        handleClose();
       },
     });
   };
@@ -50,11 +48,7 @@ const PaymentModal: FunctionComponent<PaymentModalProps> = ({
             <Input disabled variant="borderless" value={customer.phoneNumber} />
           </Form.Item>
           <Form.Item label="Địa chỉ">
-            <Input
-              disabled
-              variant="borderless"
-              value={customer.address.address}
-            />
+            <Input disabled variant="borderless" value={customer.address} />
           </Form.Item>
           <Form.Item label="Email">
             <Input disabled variant="borderless" value={customer.email} />

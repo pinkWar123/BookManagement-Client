@@ -36,6 +36,7 @@ const TitleDebounceSelect: React.FC<IProps> = ({
     const returnObj = res.data.map((item) => ({
       label: item.title,
       value: item.bookId.toString(),
+      id: item.bookId,
       ...item,
     }));
     console.log(returnObj);

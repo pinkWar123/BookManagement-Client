@@ -34,12 +34,18 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
   const navigate = useNavigate();
   const [openAddModal, setAddModal] = useState<boolean>(false);
   const { message } = App.useApp();
+  const { handleChangePage, pagination, setPagination, getQuery, params } =
+    useQueryParams();
   const [bookQuery, setBookQuery] = useState<BookQuery>({
     title: "",
     genre: "",
   });
-  const { handleChangePage, pagination, setPagination, getQuery } =
-    useQueryParams();
+  useEffect(() => {
+    setBookQuery({
+      title: (params && params["title"]) ?? "",
+      genre: (params && params["genre"]) ?? "",
+    });
+  }, [setBookQuery, params]);
   const [books, setBooks] = useState<BookViewDto[]>();
 
   const fetchBooks = useCallback(async () => {

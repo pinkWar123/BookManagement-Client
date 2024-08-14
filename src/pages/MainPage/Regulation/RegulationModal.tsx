@@ -56,7 +56,11 @@ const RegulationModal: FunctionComponent<RegulationModalProps> = ({
           <span>Áp dụng: </span>
         </Col>
         <Col span={8}>
-          <Switch value={newStatus} onChange={(value) => setNewStatus(value)} />
+          <Switch
+            disabled={modalConfig.regulation?.code !== "QD4.0"}
+            value={newStatus}
+            onChange={(value) => setNewStatus(value)}
+          />
         </Col>
       </Row>
     </Modal>

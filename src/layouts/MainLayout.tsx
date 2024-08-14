@@ -17,7 +17,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = () => {
           <Content
             style={{
               padding: "40px",
-              marginLeft: "7%",
+              // marginLeft: "7%",
             }}
           >
             <Outlet />

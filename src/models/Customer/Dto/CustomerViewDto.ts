@@ -1,5 +1,5 @@
 export interface CustomerViewDto {
-  id: string;
+  id: number;
   customerName: string;
   totalDebt: number;
   address: string;

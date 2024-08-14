@@ -1,8 +1,11 @@
-import { Card, Col, Row, Statistic } from "antd";
-import { FunctionComponent } from "react";
+import { App, Card, Col, Row, Statistic } from "antd";
+import { FunctionComponent, useEffect, useState } from "react";
 import styles from "./HomePage.module.scss";
 import LineChartComponent from "./LineChart";
 import TopUser from "./TopUsers/TopUsers";
+import { getCurrentMonthYear } from "../../../helpers/date";
+import { handleAxiosError } from "../../../helpers/errorHandling";
+import { callGetIncomeByMonth } from "../../../services/statisticService";
 interface HomePageProps {}
 
 const statisticItems = [
@@ -24,7 +27,29 @@ const statisticItems = [
   },
 ];
 
+interface Statistic {
+  income: number;
+}
+
 const HomePage: FunctionComponent<HomePageProps> = () => {
+  const [statistic, setStatistic] = useState<Statistic>();
+  const { message } = App.useApp();
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const { month, year } = getCurrentMonthYear();
+        console.log(month, year);
+        const res = await callGetIncomeByMonth(month, year);
+        console.log(res);
+        if (res.data) {
+          setStatistic({ income: res.data.income });
+        }
+      } catch (error) {
+        message.error({ content: handleAxiosError(error) });
+      }
+    };
+    fetch();
+  }, [message]);
   return (
     <>
       <Row gutter={16}>
@@ -34,7 +59,7 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
               <Card>
                 <Statistic
                   title={<strong>{item.title}</strong>}
-                  value={item.value}
+                  value={statistic?.income ?? 0}
                   decimalSeparator=","
                   suffix={item?.suffix}
                 />
