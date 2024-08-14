@@ -3,7 +3,7 @@ import InvoiceTable, { DataType } from "./InvoiceTable";
 import CustomerInfo from "../../../components/CustomerInfo/CustomerInfo";
 import CustomDivider from "../../../components/CustomDivider/CustomDivider";
 import { App, Button, Flex, Form, Typography } from "antd";
-import { Plus } from "react-feather";
+import { CreditCard, Plus } from "react-feather";
 import styles from "./Invoice.module.scss";
 import AddCustomerModal from "./AddCustomerModal";
 import { CreateInvoiceDto } from "../../../models/Invoice/Dto/CreateInvoiceDto";
@@ -68,7 +68,15 @@ const InvoicePage: FunctionComponent<InvoicePageProps> = () => {
       <CustomerInfo form={form} />
       <CustomDivider />
       <InvoiceTable form={form} data={data} setData={setData} />
-      <Button onClick={handleCreateInvoice}>Tạo hóa đơn</Button>
+      <Flex justify="flex-end">
+        <Button
+          icon={<CreditCard size={16} />}
+          onClick={handleCreateInvoice}
+          type="default"
+        >
+          Tạo hóa đơn
+        </Button>
+      </Flex>
       {openModal && <AddCustomerModal onClose={handleCloseModal} />}
     </>
   );

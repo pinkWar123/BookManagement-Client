@@ -10,12 +10,12 @@ import {
   Tag,
 } from "antd";
 import { FunctionComponent, useState } from "react";
-import { Trash } from "react-feather";
+import { Plus, Trash } from "react-feather";
 import TitleDebounceSelect, {
   BookValue,
 } from "../../../components/Debouncer/TitleDebounceSelect";
 import TypedInputNumber from "antd/es/input-number";
-
+import styles from "./Invoice.module.scss";
 interface InvoiceTableTableProps {
   form: FormInstance<unknown>;
   data: DataType[] | undefined;
@@ -230,21 +230,17 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
   return (
     <>
       <Flex gap="small">
-        <Button onClick={handleAdd}>Thêm sách</Button>
-        <Button>Get all data</Button>
+        <Button onClick={handleAdd} icon={<Plus />}>
+          Thêm sách
+        </Button>
       </Flex>
-      <Form initialValues={undefined} form={form}>
+      <Form
+        initialValues={undefined}
+        form={form}
+        className={styles["add-book-btn"]}
+      >
         <Table columns={columns} dataSource={data}></Table>
       </Form>
-      <Button
-        onClick={() => {
-          console.log(form.getFieldsValue());
-          console.log(data);
-          form.validateFields();
-        }}
-      >
-        Submit
-      </Button>
     </>
   );
 };
