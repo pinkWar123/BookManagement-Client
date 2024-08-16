@@ -4,4 +4,5 @@ export interface UpdateBookDto {
   genre: string;
   stockQuantity: number;
   price: number;
+  imagePath?: string;
 }

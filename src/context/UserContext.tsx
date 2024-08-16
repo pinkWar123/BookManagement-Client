@@ -5,7 +5,7 @@ import { App } from "antd";
 import { useNavigate } from "react-router-dom";
 import { callGetUserByAccessToken, callLogin } from "../services/userService";
 import axios from "axios";
-import { useAxiosInterceptors } from "../hooks/useAxios";
+import axiosInstance from "../services/config";
 
 export interface UserContextProps {
   user: UserDto | undefined;
@@ -22,8 +22,7 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { notification } = App.useApp();
-  useAxiosInterceptors();
+  const { notification, modal } = App.useApp();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserDto | undefined>();
   useEffect(() => {
@@ -39,6 +38,52 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     getUser();
   }, []);
+  // useAxiosInterceptors();
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      // You can modify the config before the request is sent
+      // For example, attach an authorization token
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      // Do something with request error
+      console.log(error);
+      return Promise.reject(error);
+    }
+  );
+
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      console.log(error);
+      const originalRequest = error.config;
+      console.log(originalRequest);
+      if (error.response.status === 401) {
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("token");
+        modal.warning({
+          content: "Phiên đăng nhập của bạn đã hết, vui lòng đăng nhập lại!",
+          onOk: () => {
+            setUser(undefined);
+            navigate("/auth/login", { replace: true });
+          },
+        });
+
+        return Promise.reject(error);
+
+        // if (!originalRequest._retry) {
+        //   ... other code
+        // }
+      }
+      return Promise.reject(error);
+    }
+  );
 
   const login = async (loginDto: LoginDto) => {
     try {

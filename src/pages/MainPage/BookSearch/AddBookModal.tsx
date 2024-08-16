@@ -7,26 +7,33 @@ import { CreateBookDto } from "../../../models/Book/Dto/CreateBookDto";
 import { handleAxiosError } from "../../../helpers/errorHandling";
 import { callCreateNewBook } from "../../../services/bookService";
 import { BOOK_GENRES } from "../../../constants/bookGenres";
+import UploadHandler from "../../../components/Upload/UploadHandler";
+import { useUpload } from "../../../hooks/useUpload";
 
 interface AddBookModalProps {
   open: boolean;
   closeModal: () => void;
   fetchBook: () => Promise<void>;
 }
-
 const AddBookModal: FunctionComponent<AddBookModalProps> = ({
   open,
   closeModal,
   fetchBook,
 }) => {
   const [form] = Form.useForm();
+  const { handleUpload, props, onPreview } = useUpload();
   const { message } = App.useApp();
   const [loading, setLoading] = useState<boolean>(false);
   const onSubmit = async () => {
     await form.validateFields();
     try {
       setLoading(true);
+      const images = await handleUpload();
       const createBookDto: CreateBookDto = form.getFieldsValue();
+      if (images.length > 0) {
+        createBookDto.imagePath = images[0];
+      }
+      console.log(createBookDto);
       const res = await callCreateNewBook(createBookDto);
       console.log(res);
       if (res.data) {
@@ -41,6 +48,7 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
       closeModal();
     }
   };
+
   return (
     <Modal
       centered
@@ -80,6 +88,9 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
               value: bookGenre,
             }))}
           />
+        </Form.Item>
+        <Form.Item>
+          <UploadHandler props={props} onPreview={onPreview} />
         </Form.Item>
         <Form.Item name="price" key={"price"} label="Giá bán" required>
           <InputNumber min={0} />

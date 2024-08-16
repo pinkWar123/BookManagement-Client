@@ -5,9 +5,11 @@ import { FunctionComponent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../hooks/useUser";
 import { ChevronDown, LogOut } from "react-feather";
-interface MainHeaderProps {}
+interface MainHeaderProps {
+  style: Record<string, unknown>;
+}
 
-const MainHeader: FunctionComponent<MainHeaderProps> = () => {
+const MainHeader: FunctionComponent<MainHeaderProps> = ({ style }) => {
   const { user, logout } = useUser();
   const navigate = useNavigate();
   const items: MenuProps["items"] = [
@@ -21,7 +23,7 @@ const MainHeader: FunctionComponent<MainHeaderProps> = () => {
     },
   ];
   return (
-    <Header style={{ display: "flex", justifyContent: "flex-end" }}>
+    <Header style={{ display: "flex", justifyContent: "flex-end", ...style }}>
       <div style={{ color: "white" }}>
         <Flex gap="small" style={{ marginTop: "-10px" }}>
           {user && (

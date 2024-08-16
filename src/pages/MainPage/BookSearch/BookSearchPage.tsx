@@ -123,7 +123,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
         <Row style={{ width: "100%" }} gutter={16}>
           {books?.map((book) => (
             <Col
-              span={8}
+              span={6}
               key={`${book.title}-${book.bookId}`}
               style={{ marginBottom: "40px" }}
             >

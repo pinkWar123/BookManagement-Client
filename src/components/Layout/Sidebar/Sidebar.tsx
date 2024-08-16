@@ -1,4 +1,4 @@
-import { ComponentType, FunctionComponent, useState } from "react";
+import { ComponentType, FunctionComponent } from "react";
 import { FEATURES } from "./featureList";
 import { Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
@@ -7,7 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getLastSegment } from "../../../helpers/location";
 import { PageGuardProps } from "../../Guard/Guard";
 import { useUser } from "../../../hooks/useUser";
-interface SidebarProps {}
+interface SidebarProps {
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -27,8 +30,10 @@ function getItem(
   } as MenuItem;
 }
 
-const Sidebar: FunctionComponent<SidebarProps> = () => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+const Sidebar: FunctionComponent<SidebarProps> = ({
+  collapsed,
+  setCollapsed,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useUser();
@@ -52,6 +57,13 @@ const Sidebar: FunctionComponent<SidebarProps> = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
+      style={{
+        position: "fixed", // Make the sidebar fixed
+        height: "100vh", // Ensure it covers the full viewport height
+        left: 0, // Align it to the left
+        top: 0, // Start at the top of the viewport
+        zIndex: 1000, // Ensure it stays on top of other content
+      }}
     >
       <div style={{ color: "red" }}>Quản lý sách</div>
       <Menu

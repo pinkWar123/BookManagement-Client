@@ -34,10 +34,13 @@ export const useAxiosInterceptors = () => {
         console.log(originalRequest);
         if (error.response.status === 401) {
           localStorage.removeItem("refresh_token");
-          localStorage.removeItem("access_token");
+          localStorage.removeItem("token");
           modal.warning({
             content: "Phiên đăng nhập của bạn đã hết, vui lòng đăng nhập lại!",
-            onOk: () => navigate("/auth/login", { replace: true }),
+            onOk: () => {
+              // setUser(undefined);
+              navigate("/auth/login", { replace: true });
+            },
           });
 
           return Promise.reject(error);

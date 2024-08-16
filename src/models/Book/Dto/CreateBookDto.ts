@@ -4,4 +4,5 @@ export interface CreateBookDto {
   genre: string;
   quantity: number;
   price: number;
+  imagePath?: string;
 }

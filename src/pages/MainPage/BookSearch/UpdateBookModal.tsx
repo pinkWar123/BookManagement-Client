@@ -5,6 +5,8 @@ import { BOOK_GENRES } from "../../../constants/bookGenres";
 import { UpdateBookDto } from "../../../models/Book/Dto/UpdateBookDto";
 import CancelButton from "../../../components/Button/CancelButton";
 import ConfirmButton from "../../../components/Button/ConfirmButton";
+import { useUpload } from "../../../hooks/useUpload";
+import UploadHandler from "../../../components/Upload/UploadHandler";
 
 interface UpdateBookModalProps {
   info: BookViewDto;
@@ -18,13 +20,32 @@ const UpdateBookModal: FunctionComponent<UpdateBookModalProps> = ({
   onClose,
 }) => {
   const [form] = Form.useForm();
-
+  const { handleUpload, onPreview, props, fileList } = useUpload([
+    {
+      url: info.imagePath,
+      uid: "-1",
+      name: "initial",
+    },
+  ]);
   const handleSubmit = async () => {
     await form.validateFields();
+    let images: string[] = [];
+    console.log(info);
+    if (fileList.length > 0 && fileList[0]?.url !== info.imagePath) {
+      console.log("run here");
+      images = await handleUpload();
+    }
     const updateBookDto: UpdateBookDto = {
       ...form.getFieldsValue(),
       stockQuantity: info.stockQuantity,
+      imagePath: info.imagePath,
     };
+    console.log(images);
+    if (images.length > 0) {
+      alert("upload!!!");
+      updateBookDto.imagePath = images[0];
+    }
+    console.log(updateBookDto);
     await onUpdate(updateBookDto);
   };
   return (
@@ -70,6 +91,7 @@ const UpdateBookModal: FunctionComponent<UpdateBookModalProps> = ({
             }))}
           />
         </Form.Item>
+        <UploadHandler onPreview={onPreview} props={props} />
         <Form.Item label="Giá bán" name={"price"} key={"price"}>
           <InputNumber min={0} />
         </Form.Item>

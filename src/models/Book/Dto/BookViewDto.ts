@@ -5,4 +5,5 @@ export interface BookViewDto {
   author: string;
   stockQuantity: number;
   price: number;
+  imagePath?: string;
 }
