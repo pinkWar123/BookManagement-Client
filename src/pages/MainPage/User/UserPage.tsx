@@ -1,17 +1,8 @@
-import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import UserTable from "./UserTable";
-import {
-  App,
-  Button,
-  Flex,
-  GetProp,
-  Input,
-  Select,
-  TablePaginationConfig,
-  TableProps,
-} from "antd";
+import { App, Button, Flex, Input, Select, TablePaginationConfig } from "antd";
 import { USERS } from "../../../data/users";
-import { IUser, Role } from "../../../models/User/User";
+import { Role } from "../../../models/User/User";
 import {
   callChangeUserRole,
   callDeleteUser,
@@ -90,7 +81,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
       message.error({ content: handleAxiosError(error) });
     }
   };
-  const updateUserRole = async (record: IUser, role: Role) => {
+  const updateUserRole = async (record: UserViewDto, role: Role) => {
     if (!users) return;
     try {
       const res = await callChangeUserRole(record.id, { role: role });
@@ -128,27 +119,31 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
             }))
           }
         />
-        <Select
-          style={{ width: "20%" }}
-          placeholder="Vai trò..."
-          options={[
-            ...USERS.map((user) => ({
-              label: user.role,
-              value: user.role,
-            })),
-            {
-              label: "ALL",
-              value: "ALL",
-            },
-          ]}
-          defaultValue={"ALL"}
-          onChange={(value) =>
-            setUserFilters((prev) => ({
-              ...prev,
-              role: value === "ALL" ? undefined : value,
-            }))
-          }
-        />
+        <>
+          <p style={{ marginLeft: "12px", marginTop: "6px" }}>Vai trò:</p>
+          <Select
+            style={{ width: "20%" }}
+            placeholder="Vai trò..."
+            options={[
+              ...USERS.map((user) => ({
+                label: user.role,
+                value: user.role,
+              })),
+              {
+                label: "ALL",
+                value: "ALL",
+              },
+            ]}
+            defaultValue={"ALL"}
+            onChange={(value) =>
+              setUserFilters((prev) => ({
+                ...prev,
+                role: value === "ALL" ? undefined : value,
+              }))
+            }
+          />
+        </>
+
         <Button
           onClick={() => {
             const tableParams: TableParams = {

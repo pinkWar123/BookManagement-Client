@@ -1,11 +1,11 @@
 import { Button, Flex, Form, Input, Popconfirm, Table, TableProps } from "antd";
 import TypedInputNumber from "antd/es/input-number";
 import { FunctionComponent, useState } from "react";
-import { Trash } from "react-feather";
+import { CreditCard, Plus, Trash } from "react-feather";
 import TitleDebounceSelect, {
   BookValue,
 } from "../../../components/Debouncer/TitleDebounceSelect";
-
+import styles from "./BookEntryPage.module.scss";
 interface BookEntryTableProps {}
 
 interface DataType {
@@ -53,19 +53,28 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   const handleSelect = (id: string, item?: BookValue) => {
     console.log("change");
     form.setFieldValue(id, item);
+
+    // setIds(prev => )
   };
 
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
       dataIndex: "order",
+      width: "10%",
       key: "STT",
       render: (_, record) => (
-        <span>
-          {record && data?.findIndex((item) => item.key === record.key)
-            ? data?.findIndex((item) => item.key === record.key) + 1
-            : 1}
-        </span>
+        <Form.Item key={`stt-${record.key.toString()}`}>
+          <Input
+            disabled
+            variant="borderless"
+            value={
+              record && data?.findIndex((item) => item.key === record.key)
+                ? data?.findIndex((item) => item.key === record.key) + 1
+                : 1
+            }
+          ></Input>
+        </Form.Item>
       ),
     },
     {
@@ -83,6 +92,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
             <TitleDebounceSelect
               id={record.key.toString()}
               onChange={handleSelect}
+              getExistedValues={() => form.getFieldsValue()}
             />
           </Form.Item>
         );
@@ -114,7 +124,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       key: "stockQuantity",
       render: (_, record) => (
         <Form.Item
-          name={[record.key.toString(), "stockQuantity"]}
+          name={[record.key.toString(), "addQuantity"]}
           rules={[{ required: true }]}
         >
           <TypedInputNumber />
@@ -126,7 +136,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <>
+        <Form.Item key={`remove_icon-${record.key.toString()}`}>
           <Popconfirm
             title="Bạn có chắc muốn hủy dòng này không?"
             onConfirm={() => handleRemove(record.key)}
@@ -135,29 +145,44 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
               <Trash />
             </a>
           </Popconfirm>
-        </>
+        </Form.Item>
       ),
     },
   ];
 
+  const handleSubmit = async () => {
+    await form.validateFields();
+    const values = form.getFieldsValue();
+  };
+
   return (
     <>
       <Flex gap="small">
-        <Button onClick={handleAdd}>Thêm sách</Button>
-        <Button>Get all data</Button>
+        <Button
+          onClick={handleAdd}
+          icon={<Plus size={16} />}
+          className={styles["add-btn"]}
+        >
+          Thêm sách
+        </Button>
       </Flex>
       <Form initialValues={undefined} form={form}>
-        <Table columns={columns} dataSource={data}></Table>
+        <Table columns={columns} dataSource={data} pagination={false}></Table>
       </Form>
-      <Button
-        onClick={() => {
-          console.log(form.getFieldsValue());
-          console.log(data);
-          form.validateFields();
-        }}
-      >
-        Submit
-      </Button>
+      <Flex justify="flex-end" className={styles["submit"]}>
+        <Button
+          className={styles["submit-btn"]}
+          type="primary"
+          icon={<CreditCard size={16} />}
+          onClick={() => {
+            console.log(form.getFieldsValue());
+            console.log(data);
+            form.validateFields();
+          }}
+        >
+          Thêm sách
+        </Button>
+      </Flex>
     </>
   );
 };

@@ -13,7 +13,7 @@ const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    if (user !== null) navigate("/home");
+    if (user) navigate("/home");
   }, [user, navigate]);
 
   const authNavigate = () => {

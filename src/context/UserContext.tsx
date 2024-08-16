@@ -5,9 +5,10 @@ import { App } from "antd";
 import { useNavigate } from "react-router-dom";
 import { callGetUserByAccessToken, callLogin } from "../services/userService";
 import axios from "axios";
+import { useAxiosInterceptors } from "../hooks/useAxios";
 
 export interface UserContextProps {
-  user: UserDto | null;
+  user: UserDto | undefined;
   login: (userData: LoginDto) => Promise<void>;
   logout: () => void;
 }
@@ -22,8 +23,9 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { notification } = App.useApp();
+  useAxiosInterceptors();
   const navigate = useNavigate();
-  const [user, setUser] = useState<UserDto | null>(null);
+  const [user, setUser] = useState<UserDto | undefined>();
   useEffect(() => {
     const getUser = async () => {
       const accessToken = localStorage.getItem("token");
@@ -60,7 +62,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);
+    setUser(undefined);
   };
 
   return (

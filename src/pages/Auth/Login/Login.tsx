@@ -5,7 +5,6 @@ import Input from "antd/es/input/Input";
 import { LoginDto } from "../../../models/User/Dto/loginDto";
 import { useUser } from "../../../hooks/useUser";
 import { isAxiosError } from "axios";
-import { passwordRule } from "../rule";
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
@@ -56,13 +55,7 @@ const Login: FunctionComponent<LoginProps> = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Mật khẩu"
-            name="password"
-            key="password"
-            required
-            rules={passwordRule}
-          >
+          <Form.Item label="Mật khẩu" name="password" key="password" required>
             <Input type="password" />
           </Form.Item>
 

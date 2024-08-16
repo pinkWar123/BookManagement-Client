@@ -12,12 +12,14 @@ interface IProps {
   items?: BookValue;
   onChange: (id: string, value?: BookValue) => void;
   id: string;
+  getExistedValues: () => { title: string; author: string; genre: string }[];
 }
 
 const TitleDebounceSelect: React.FC<IProps> = ({
   items,
   onChange,
   id,
+  getExistedValues,
 }: IProps) => {
   const [bookValues, setBookValues] = useState<BookValue[] | undefined>();
   const fetchTitleList = async (value: string): Promise<BookValue[]> => {
@@ -33,12 +35,31 @@ const TitleDebounceSelect: React.FC<IProps> = ({
         ...item,
       }))
     );
-    const returnObj = res.data.map((item) => ({
+    let returnObj = res.data.map((item) => ({
       label: item.title,
       value: item.bookId.toString(),
       id: item.bookId,
       ...item,
     }));
+    // if (alreadyPickedIds && alreadyPickedIds.length > 0) {
+    //   returnObj = returnObj.filter(
+    //     (item) => !alreadyPickedIds?.includes(item.id)
+    //   );
+    // }
+    const existedValues = getExistedValues();
+    console.log(existedValues);
+    if (existedValues) {
+      const existedBooks = Object.values(existedValues);
+      returnObj = returnObj.filter(
+        (value) =>
+          !existedBooks.some(
+            (book) =>
+              book.title === value.title &&
+              book.author === value.author &&
+              book.genre === value.genre
+          )
+      );
+    }
     console.log(returnObj);
     setBookValues(returnObj);
     return returnObj;

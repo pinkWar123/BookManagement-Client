@@ -97,13 +97,20 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
     {
       title: "STT",
       dataIndex: "order",
+      width: "10%",
       key: "STT",
       render: (_, record) => (
-        <span>
-          {record && data?.findIndex((item) => item.key === record.key)
-            ? data?.findIndex((item) => item.key === record.key) + 1
-            : 1}
-        </span>
+        <Form.Item key={`stt-${record.key.toString()}`}>
+          <Input
+            variant="borderless"
+            disabled
+            value={
+              record && data?.findIndex((item) => item.key === record.key)
+                ? data?.findIndex((item) => item.key === record.key) + 1
+                : 1
+            }
+          />
+        </Form.Item>
       ),
     },
     {
@@ -117,6 +124,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
             <TitleDebounceSelect
               id={record.key.toString()}
               onChange={handleSelect}
+              getExistedValues={() => form.getFieldValue("bookList")}
             />
           </Form.Item>
         );
@@ -213,7 +221,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <>
+        <Form.Item>
           <Popconfirm
             title="Bạn có chắc muốn hủy dòng này không?"
             onConfirm={() => handleRemove(record.key)}
@@ -222,7 +230,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
               <Trash />
             </a>
           </Popconfirm>
-        </>
+        </Form.Item>
       ),
     },
   ];
@@ -234,12 +242,8 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
           Thêm sách
         </Button>
       </Flex>
-      <Form
-        initialValues={undefined}
-        form={form}
-        className={styles["add-book-btn"]}
-      >
-        <Table columns={columns} dataSource={data}></Table>
+      <Form form={form} className={styles["add-book-btn"]}>
+        <Table columns={columns} dataSource={data} pagination={false}></Table>
       </Form>
     </>
   );

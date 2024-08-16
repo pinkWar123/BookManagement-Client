@@ -26,8 +26,8 @@ const MainHeader: FunctionComponent<MainHeaderProps> = () => {
         <Flex gap="small" style={{ marginTop: "-10px" }}>
           {user && (
             <Space>
-              <Dropdown menu={{ items }}>
-                <ChevronDown style={{ marginTop: "30px", cursor: "pointer" }} />
+              <Dropdown menu={{ items }} trigger={["click"]}>
+                <ChevronDown style={{ marginTop: "10px", cursor: "pointer" }} />
               </Dropdown>
               <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
               <div>
