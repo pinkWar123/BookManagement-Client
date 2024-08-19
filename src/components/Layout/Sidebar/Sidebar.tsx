@@ -65,7 +65,9 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
         zIndex: 1000, // Ensure it stays on top of other content
       }}
     >
-      <div style={{ color: "red" }}>Quản lý sách</div>
+      <div className={styles["logo"]} onClick={() => navigate("/home")}>
+        Quản lý sách
+      </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={[`/${getLastSegment(location)}`]}
