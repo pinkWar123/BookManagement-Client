@@ -33,7 +33,7 @@ const UpdateBookModal: FunctionComponent<UpdateBookModalProps> = ({
     console.log(info);
     if (fileList.length > 0 && fileList[0]?.url !== info.imagePath) {
       console.log("run here");
-      images = await handleUpload();
+      images = (await handleUpload()).data.fileNames;
     }
     const updateBookDto: UpdateBookDto = {
       ...form.getFieldsValue(),
@@ -42,7 +42,6 @@ const UpdateBookModal: FunctionComponent<UpdateBookModalProps> = ({
     };
     console.log(images);
     if (images.length > 0) {
-      alert("upload!!!");
       updateBookDto.imagePath = images[0];
     }
     console.log(updateBookDto);

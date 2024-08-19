@@ -28,7 +28,7 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
     await form.validateFields();
     try {
       setLoading(true);
-      const images = await handleUpload();
+      const images = (await handleUpload()).data.fileNames;
       const createBookDto: CreateBookDto = form.getFieldsValue();
       if (images.length > 0) {
         createBookDto.imagePath = images[0];
