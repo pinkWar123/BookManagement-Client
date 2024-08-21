@@ -1,4 +1,6 @@
+import { IBookEntryDetail } from "../../BookEntryDetail/BookEntryDetail";
+
 export interface CreateBookEntryDto {
-  bookId: string;
-  stockQuantity: number;
+  entryDate: string;
+  bookEntryDetails: IBookEntryDetail[];
 }

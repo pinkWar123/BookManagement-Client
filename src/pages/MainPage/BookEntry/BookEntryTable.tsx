@@ -1,4 +1,13 @@
-import { Button, Flex, Form, Input, Popconfirm, Table, TableProps } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  message,
+  Popconfirm,
+  Table,
+  TableProps,
+} from "antd";
 import TypedInputNumber from "antd/es/input-number";
 import { FunctionComponent, useState } from "react";
 import { CreditCard, Plus, Trash } from "react-feather";
@@ -6,6 +15,9 @@ import TitleDebounceSelect, {
   BookValue,
 } from "../../../components/Debouncer/TitleDebounceSelect";
 import styles from "./BookEntryPage.module.scss";
+import { CreateBookEntryDto } from "../../../models/BookEntry/Dto/CreateBookEntryDto";
+import { getToday } from "../../../helpers/date";
+import { callCreateBookEntry } from "../../../services/bookEntryService";
 interface BookEntryTableProps {}
 
 interface DataType {
@@ -17,10 +29,18 @@ interface DataType {
   stockQuantity: number;
 }
 
+interface FormValue {
+  addQuantity: number;
+  author: string;
+  genre: string;
+  id: number;
+  title: string;
+}
+
 const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   const [data, setData] = useState<DataType[] | undefined>();
   const [count, setCount] = useState<number>(1);
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<FormValue[]>();
   const handleAdd = () => {
     const newData: DataType = {
       title: "",
@@ -60,7 +80,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "STT",
-      dataIndex: "order",
+      dataIndex: "STT",
       width: "10%",
       key: "STT",
       render: (_, record) => (
@@ -75,6 +95,15 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
             }
           ></Input>
         </Form.Item>
+      ),
+    },
+    {
+      dataIndex: "id",
+      render: (_, record) => (
+        <Form.Item
+          key={`id-${record.key.toString()}`}
+          name={[record.key.toString(), "id"]}
+        />
       ),
     },
     {
@@ -153,6 +182,22 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
   const handleSubmit = async () => {
     await form.validateFields();
     const values = form.getFieldsValue();
+    console.log(values);
+    console.log(getToday());
+    const createBookEntryDto: CreateBookEntryDto = {
+      entryDate: getToday(),
+      bookEntryDetails: Object.values(values).map((value) => ({
+        bookId: value.id,
+        quantity: value.addQuantity,
+      })),
+    };
+    const res = await callCreateBookEntry(createBookEntryDto);
+    console.log(res);
+    if (res.data) {
+      message.success({ content: "Nhập sách vào kho thành công!!" });
+      form.resetFields();
+      setData(undefined);
+    }
   };
 
   return (
@@ -174,10 +219,8 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
           className={styles["submit-btn"]}
           type="primary"
           icon={<CreditCard size={16} />}
-          onClick={() => {
-            console.log(form.getFieldsValue());
-            console.log(data);
-            form.validateFields();
+          onClick={async () => {
+            await handleSubmit();
           }}
         >
           Thêm sách

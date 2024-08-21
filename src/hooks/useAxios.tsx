@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../services/config";
-import { App } from "antd";
+import { App, message } from "antd";
+import { isAxiosError } from "axios";
+import { handleAxiosError } from "../helpers/errorHandling";
 
 export const useAxiosInterceptors = () => {
   const navigate = useNavigate();
@@ -48,6 +50,10 @@ export const useAxiosInterceptors = () => {
           // if (!originalRequest._retry) {
           //   ... other code
           // }
+        } else {
+          if (isAxiosError(error)) {
+            message.error({ content: handleAxiosError(error) }, 1);
+          }
         }
         return Promise.reject(error);
       }

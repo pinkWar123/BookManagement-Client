@@ -1,1 +1,4 @@
-export interface IBookEntry {}
+export interface IBookEntryDetail {
+  bookId: number;
+  quantity: number;
+}

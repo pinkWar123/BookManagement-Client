@@ -1,11 +1,13 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { UserDto } from "../models/User/Dto/userDto";
 import { LoginDto } from "../models/User/Dto/loginDto";
-import { App } from "antd";
+import { App, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { callGetUserByAccessToken, callLogin } from "../services/userService";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import axiosInstance from "../services/config";
+import { handleAxiosError } from "../helpers/errorHandling";
+import { useAxiosInterceptors } from "../hooks/useAxios";
 
 export interface UserContextProps {
   user: UserDto | undefined;
@@ -25,6 +27,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { notification, modal } = App.useApp();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserDto | undefined>();
+  useAxiosInterceptors();
   useEffect(() => {
     const getUser = async () => {
       const accessToken = localStorage.getItem("token");
@@ -38,52 +41,55 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     getUser();
   }, []);
-  // useAxiosInterceptors();
-  axiosInstance.interceptors.request.use(
-    (config) => {
-      // You can modify the config before the request is sent
-      // For example, attach an authorization token
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => {
-      // Do something with request error
-      console.log(error);
-      return Promise.reject(error);
-    }
-  );
+  // axiosInstance.interceptors.request.use(
+  //   (config) => {
+  //     // You can modify the config before the request is sent
+  //     // For example, attach an authorization token
+  //     const token = localStorage.getItem("token");
+  //     if (token) {
+  //       config.headers.Authorization = `Bearer ${token}`;
+  //     }
+  //     return config;
+  //   },
+  //   (error) => {
+  //     // Do something with request error
+  //     console.log(error);
+  //     return Promise.reject(error);
+  //   }
+  // );
 
-  axiosInstance.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error) => {
-      console.log(error);
-      const originalRequest = error.config;
-      console.log(originalRequest);
-      if (error.response.status === 401) {
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("token");
-        modal.warning({
-          content: "Phiên đăng nhập của bạn đã hết, vui lòng đăng nhập lại!",
-          onOk: () => {
-            setUser(undefined);
-            navigate("/auth/login", { replace: true });
-          },
-        });
+  // axiosInstance.interceptors.response.use(
+  //   (response) => {
+  //     return response;
+  //   },
+  //   (error) => {
+  //     console.log(error);
+  //     const originalRequest = error.config;
+  //     console.log(originalRequest);
+  //     if (error.response.status === 401) {
+  //       localStorage.removeItem("refresh_token");
+  //       localStorage.removeItem("token");
+  //       modal.warning({
+  //         content: "Phiên đăng nhập của bạn đã hết, vui lòng đăng nhập lại!",
+  //         onOk: () => {
+  //           setUser(undefined);
+  //           navigate("/auth/login", { replace: true });
+  //         },
+  //       });
 
-        return Promise.reject(error);
+  //       return Promise.reject(error);
 
-        // if (!originalRequest._retry) {
-        //   ... other code
-        // }
-      }
-      return Promise.reject(error);
-    }
-  );
+  //       // if (!originalRequest._retry) {
+  //       //   ... other code
+  //       // }
+  //     } else {
+  //       if (isAxiosError(error)) {
+  //         message.error({ content: handleAxiosError(error) }, 1);
+  //       }
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );
 
   const login = async (loginDto: LoginDto) => {
     try {

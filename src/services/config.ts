@@ -29,21 +29,21 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Add a response interceptor
-axiosInstance.interceptors.response.use(
-  (response) => {
-    // Any status code that lies within the range of 2xx causes this function to trigger
-    return response;
-  },
-  (error) => {
-    // Any status codes that falls outside the range of 2xx causes this function to trigger
-    if (error.status === 201) {
-    }
-    console.log(error);
+// // Add a response interceptor
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     // Any status code that lies within the range of 2xx causes this function to trigger
+//     return response;
+//   },
+//   (error) => {
+//     // Any status codes that falls outside the range of 2xx causes this function to trigger
+//     if (error.status === 201) {
+//     }
+//     console.log(error);
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 /**
  * Replaces main `axios` instance with the custom-one.
