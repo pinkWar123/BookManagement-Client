@@ -50,6 +50,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
 
   const fetchBooks = useCallback(async () => {
     try {
+      console.log(getQuery());
       const res = await callGetAllBooks(getQuery());
       console.log(res);
       setBooks(res.data);
@@ -142,7 +143,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
         current={pagination.pageNumber}
         pageSize={pagination.pageSize}
         total={pagination.total}
-        onChange={(page) => handleChangePage(page)}
+        onChange={(page, pageSize) => handleChangePage(page, pageSize)}
       />
     </>
   );
