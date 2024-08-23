@@ -1,6 +1,9 @@
 import { Card } from "antd";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import TopUserItem from "./TopUserItem";
+import { CustomerViewDto } from "../../../../models/Customer/Dto/CustomerViewDto";
+import { callGetTopCustomers } from "../../../../services/customerService";
+import dayjs from "dayjs";
 
 interface TopUserProps {}
 
@@ -38,15 +41,27 @@ const USERS = [
 ];
 
 const TopUser: FunctionComponent<TopUserProps> = () => {
+  const [customers, setCustomers] = useState<CustomerViewDto[]>();
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      const today = dayjs();
+      const res = await callGetTopCustomers(today.month() + 1, today.year());
+      if (res.data) {
+        console.log(res.data);
+        setCustomers(res.data);
+      }
+    };
+    fetchCustomers();
+  }, []);
   return (
     <Card>
       <div>Top thành viên</div>
       <div>
-        {USERS.map((user) => (
+        {customers?.map((user) => (
           <TopUserItem
-            avatar={user.avatar}
-            fullName={user.fullName}
-            email={user.email}
+            avatar="https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png"
+            fullName={user.customerName}
+            email={user.email ?? ""}
           />
         ))}
       </div>

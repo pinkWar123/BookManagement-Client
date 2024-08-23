@@ -1,63 +1,84 @@
-import { Divider, Table, TableProps, Tag } from "antd";
-import { FunctionComponent } from "react";
+import { Divider, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { DebtReportDto } from "../../../models/Report/Dto/DebtReportDto";
+import { Month } from "./ReportPage";
+import { callGetDebtReportsByMonth } from "../../../services/reportService";
+import { TableParams } from "../User/UserPage";
 
-interface DeptTableProps {}
-
-interface IDebt {
-  title: string;
-  startDebt: number;
-  change: number;
-  endDebt: number;
-  order: number;
+interface DeptTableProps {
+  month: Month;
 }
 
-const data: IDebt[] = [
-  {
-    order: 1,
-    title: "Dám bị ghét",
-    startDebt: 2,
-    change: 150,
-    endDebt: 300,
-  },
-  {
-    order: 2,
-    title: "Dám hạnh phúc",
-    startDebt: 2,
-    change: 120,
-    endDebt: 240,
-  },
-];
-
-const DeptTable: FunctionComponent<DeptTableProps> = () => {
-  const columns: TableProps<IDebt>["columns"] = [
-    {
-      title: "STT",
-      dataIndex: "order",
-      key: "STT",
-      render: (value) => <span>{value}</span>,
+const DeptTable: FunctionComponent<DeptTableProps> = ({ month }) => {
+  const [details, setDetails] = useState<DebtReportDto[]>();
+  const [pagination, setPagination] = useState<TableParams>({
+    pagination: {
+      pageSize: 5,
+      current: 1,
     },
+  });
+
+  const fetchDetails = useCallback(
+    async (pagination: TablePaginationConfig, month: Month) => {
+      const query = {
+        month: month.month,
+        year: month.year,
+        pageNumber: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 5,
+      };
+      const res = await callGetDebtReportsByMonth(query);
+      console.log(res);
+      if (res?.data) {
+        setDetails(res.data);
+        setPagination({
+          pagination: {
+            pageSize: res.pageSize,
+            current: res.pageNumber,
+            total: res.totalRecords,
+          },
+        });
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const newPagination = {
+      current: 1,
+      pageSize: 1,
+    };
+    console.log("Run here");
+    console.log(month);
+    fetchDetails(newPagination, month);
+  }, [month]);
+
+  useEffect(() => {
+    if (!pagination.pagination) return;
+    fetchDetails(pagination.pagination, month);
+  }, [fetchDetails]);
+  const columns: TableProps<DebtReportDto>["columns"] = [
     {
-      title: "Tên sách",
-      dataIndex: "title",
+      title: "Tên khách hàng",
+      dataIndex: "customerName",
       key: "title",
       width: "30%",
       render: (value) => <span>{value}</span>,
     },
     {
       title: "Nợ đầu",
-      dataIndex: "startDebt",
+      dataIndex: "initialDebt",
       key: "startDebt",
       render: (value) => <Tag>{value}</Tag>,
     },
     {
       title: "Nợ cuối",
-      dataIndex: "endDebt",
+      dataIndex: "finalDebt",
       key: "endDebt",
       render: (value) => <span>{value}</span>,
     },
     {
       title: "Phát sinh",
-      dataIndex: "change",
+      dataIndex: "additionalDebt",
       key: "change",
       render: (value) => <span>{value}</span>,
     },
@@ -65,7 +86,14 @@ const DeptTable: FunctionComponent<DeptTableProps> = () => {
   return (
     <>
       <Divider>Tình trạng nợ</Divider>
-      <Table columns={columns} dataSource={data}></Table>
+      <Table
+        columns={columns}
+        dataSource={details}
+        pagination={pagination.pagination}
+        onChange={async (pagination: TablePaginationConfig) =>
+          fetchDetails(pagination, month)
+        }
+      ></Table>
     </>
   );
 };

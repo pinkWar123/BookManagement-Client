@@ -72,7 +72,7 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={16} style={{ marginTop: "20px" }}>
+      <Row gutter={16} style={{ marginTop: "20px", minHeight: "500px" }}>
         <Col span={15}>
           <LineChartComponent />
         </Col>

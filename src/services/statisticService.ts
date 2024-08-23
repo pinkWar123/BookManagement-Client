@@ -1,3 +1,4 @@
+import { IncomeByMonthDto } from "../models/Statistics/IncomeByMonthDto";
 import { IncomeViewDto } from "../models/Statistics/IncomeViewDto";
 import { IResponse } from "../types/response";
 import axiosInstance from "./config";
@@ -24,5 +25,13 @@ export const callGetInvoiceCountByMonth = async (
     await axiosInstance.get<IResponse<number>>("statistic/invoice-count", {
       params: { month, year },
     })
+  ).data;
+};
+
+export const callGetIncomeHistory = async () => {
+  return (
+    await axiosInstance.get<IResponse<IncomeByMonthDto[]>>(
+      "statistic/income-history"
+    )
   ).data;
 };

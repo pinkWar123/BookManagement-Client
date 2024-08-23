@@ -31,3 +31,14 @@ export const callGetCustomers = async (
     })
   ).data;
 };
+
+export const callGetTopCustomers = async (month: number, year: number) => {
+  return (
+    await axiosInstance.get<IResponse<CustomerViewDto[]>>(
+      "customers/getTop5CustomerPerMonth",
+      {
+        params: { month, year },
+      }
+    )
+  ).data;
+};

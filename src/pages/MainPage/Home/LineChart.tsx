@@ -9,7 +9,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { IncomeByMonthDto } from "../../../models/Statistics/IncomeByMonthDto";
+import { callGetIncomeHistory } from "../../../services/statisticService";
 
 ChartJS.register(
   LineElement,
@@ -22,12 +24,23 @@ ChartJS.register(
 );
 
 const LineChartComponent: FunctionComponent = () => {
+  const [income, setIncome] = useState<IncomeByMonthDto[]>();
+  useEffect(() => {
+    const fetchIncome = async () => {
+      const res = await callGetIncomeHistory();
+      if (res.data) {
+        setIncome(res.data);
+      }
+    };
+    fetchIncome();
+  }, []);
+
   const data = {
-    labels: ["23 Nov", "24", "25", "26", "27", "28", "29", "30"],
+    labels: income?.map((income) => income.month),
     datasets: [
       {
         label: "Tổng thu nhập tháng tích lũy",
-        data: [25000, 27000, 29000, 31000, 35000, 38000, 42000, 47000],
+        data: income?.map((income) => income.income),
         borderColor: "black",
         borderWidth: 2,
         pointBackgroundColor: "black",
