@@ -72,8 +72,6 @@ const LineChartComponent: FunctionComponent = () => {
           size: 20,
         },
         color: "black",
-        align: "start", // Aligns the title to the start (left)
-        position: "top", // Positions the title at the top
         padding: {
           top: 10,
           bottom: 20,
@@ -90,14 +88,6 @@ const LineChartComponent: FunctionComponent = () => {
       y: {
         display: true,
         beginAtZero: false,
-        ticks: {
-          stepSize: 10000, // Step size nhỏ để giãn khoảng cách giữa các giá trị
-          callback: function (value) {
-            if (value % 100000 === 0) {
-              return value.toLocaleString(); // Chỉ hiển thị các giá trị chính (0, 100,000, 200,000,...)
-            }
-          },
-        },
       },
     },
   };

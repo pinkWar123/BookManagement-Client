@@ -1,6 +1,8 @@
-export function handleAxiosError(error) {
+import { isAxiosError } from "axios";
+
+export function handleAxiosError(error: unknown) {
   // Check if the error is an Axios error
-  if (!error.isAxiosError) {
+  if (!isAxiosError(error)) {
     return "An unknown error occurred.";
   }
 
@@ -9,7 +11,7 @@ export function handleAxiosError(error) {
 
   // Check for the status code and return appropriate messages
   if (
-    response.status === 400 &&
+    response?.status === 400 &&
     response.data.problemDetails &&
     response.data.problemDetails.errors
   ) {
@@ -21,7 +23,7 @@ export function handleAxiosError(error) {
     return `Validation error: ${errorMessages}`;
   } else {
     // Handle other errors
-    const errorMessage = response.data.title || "An error occurred";
+    const errorMessage = response?.data.title || "An error occurred";
     return `${errorMessage}`;
   }
 }

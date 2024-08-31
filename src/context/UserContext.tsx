@@ -1,12 +1,10 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { UserDto } from "../models/User/Dto/userDto";
 import { LoginDto } from "../models/User/Dto/loginDto";
-import { App, message } from "antd";
+import { App } from "antd";
 import { useNavigate } from "react-router-dom";
 import { callGetUserByAccessToken, callLogin } from "../services/userService";
-import axios, { isAxiosError } from "axios";
-import axiosInstance from "../services/config";
-import { handleAxiosError } from "../helpers/errorHandling";
+import axios from "axios";
 import { useAxiosInterceptors } from "../hooks/useAxios";
 
 export interface UserContextProps {
@@ -24,7 +22,7 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { notification, modal } = App.useApp();
+  const { notification } = App.useApp();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserDto | undefined>();
   useAxiosInterceptors();
