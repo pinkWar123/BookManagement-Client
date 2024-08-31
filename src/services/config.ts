@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Create an instance of axios
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5226/api/", // Replace with your base URL
+  baseURL:
+    "https://bookmanagementsystem-ezb4gue9edfxfagf.eastus-01.azurewebsites.net/api/", // Replace with your base URL
   timeout: 10000, // Optional timeout setting
   withCredentials: true,
   headers: {

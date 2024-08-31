@@ -156,7 +156,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
           name={[record.key.toString(), "addQuantity"]}
           rules={[{ required: true }]}
         >
-          <TypedInputNumber />
+          <TypedInputNumber min={0} />
         </Form.Item>
       ),
     },

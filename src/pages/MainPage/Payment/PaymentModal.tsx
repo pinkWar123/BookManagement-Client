@@ -65,7 +65,6 @@ const PaymentModal: FunctionComponent<PaymentModalProps> = ({
             <InputNumber
               placeholder="Nhập số tiền"
               min={0}
-              max={customer.totalDebt}
               onChange={(value) => setPayAmount(value ?? 0)}
             />
           </Form.Item>

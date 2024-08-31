@@ -17,7 +17,7 @@ const TopUserItem: FunctionComponent<TopUserItemProps> = ({
       <Col span={4}>
         <Avatar src={avatar} />
       </Col>
-      <Col span={20}>
+      <Col span={20} className={styles["text"]}>
         <strong>{fullName}</strong>
         <div>{email}</div>
       </Col>

@@ -13,7 +13,7 @@ const InventoryTable: FunctionComponent<InventoryTableProps> = ({ month }) => {
   const [details, setDetails] = useState<InventoryReportDetailDto[]>();
   const [pagination, setPagination] = useState<TableParams>({
     pagination: {
-      pageSize: 1,
+      pageSize: 5,
       current: 1,
     },
   });
@@ -45,7 +45,7 @@ const InventoryTable: FunctionComponent<InventoryTableProps> = ({ month }) => {
   useEffect(() => {
     const newPagination = {
       current: 1,
-      pageSize: 1,
+      pageSize: 5,
     };
     console.log("Run here");
     console.log(month);

@@ -9,7 +9,7 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { FunctionComponent, useState } from "react";
+import { useState } from "react";
 import { Plus, Trash } from "react-feather";
 import TitleDebounceSelect, {
   BookValue,
@@ -38,7 +38,7 @@ interface IProps {
   value: number;
 }
 
-const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
+const InvoiceTable: React.FC<InvoiceTableTableProps> = ({
   form,
   data,
   setData,
@@ -97,27 +97,21 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
     {
       title: "STT",
       dataIndex: "order",
-      width: "10%",
+      width: "5%",
       key: "STT",
       render: (_, record) => (
-        <Form.Item key={`stt-${record.key.toString()}`}>
-          <Input
-            variant="borderless"
-            disabled
-            value={
-              record && data?.findIndex((item) => item.key === record.key)
-                ? data?.findIndex((item) => item.key === record.key) + 1
-                : 1
-            }
-          />
-        </Form.Item>
+        <div style={{ marginTop: "-25px", color: "#ccc" }}>
+          {record && data?.findIndex((item) => item.key === record.key)
+            ? data?.findIndex((item) => item.key === record.key) + 1
+            : 1}
+        </div>
       ),
     },
     {
       title: "Tên sách",
       dataIndex: "title",
       key: "title",
-      width: "35%",
+      width: "45%",
       render: (_, record) => {
         return (
           <Form.Item name={["bookList", record.key.toString(), "title"]}>
@@ -134,7 +128,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
       title: "Số lượng",
       dataIndex: "sellQuantity",
       key: "sellQuantity",
-      width: "5%",
+      width: "10%",
       render: (_, record) => (
         <Form.Item
           name={["bookList", record.key.toString(), "sellQuantity"]}
@@ -193,7 +187,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
       title: "Đơn giá",
       dataIndex: "price",
       key: "price",
-      width: "20%",
+      width: "15%",
       render: (_, record) => (
         <Form.Item name={["bookList", record.key.toString(), "price"]}>
           <Input disabled variant="borderless" />
@@ -204,7 +198,7 @@ const InvoiceTable: FunctionComponent<InvoiceTableTableProps> = ({
       title: "Thành tiền",
       dataIndex: "total",
       key: "total",
-      width: "20%",
+      width: "15%",
 
       render: (_, record) => (
         <Form.Item name={["bookList", record.key.toString(), "total"]}>

@@ -84,7 +84,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
           fetchBook={fetchBooks}
         />
       )}
-      <Flex gap="large">
+      <Flex gap="large" style={{ marginLeft: "8px" }}>
         <Button icon={<Plus />} onClick={() => setAddModal(true)}>
           Thêm sách mới
         </Button>

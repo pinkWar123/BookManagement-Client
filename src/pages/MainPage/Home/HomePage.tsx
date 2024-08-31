@@ -1,4 +1,4 @@
-import { App, Card, Col, Row, Statistic } from "antd";
+import { App, Card, Col, Flex, Row, Statistic } from "antd";
 import { FunctionComponent, useEffect, useState } from "react";
 import LineChartComponent from "./LineChart";
 import TopUser from "./TopUsers/TopUsers";
@@ -9,6 +9,7 @@ import {
   callGetIncomeByMonth,
   callGetInvoiceCountByMonth,
 } from "../../../services/statisticService";
+import styles from "./HomePage.module.scss";
 interface HomePageProps {}
 
 interface Statistic {
@@ -42,7 +43,7 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
     <>
       <Row gutter={16}>
         <Col span={8}>
-          <Card>
+          <Card className={styles["shadow"]}>
             <Statistic
               title="Tổng thu nhập"
               value={statistic?.income ?? 0}
@@ -53,7 +54,7 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
         </Col>
 
         <Col span={8}>
-          <Card>
+          <Card className={styles["shadow"]}>
             <Statistic
               title="Tổng số hóa đơn"
               value={statistic?.invoiceCount ?? 0}
@@ -63,7 +64,7 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
         </Col>
 
         <Col span={8}>
-          <Card>
+          <Card className={styles["shadow"]}>
             <Statistic
               title="Tổng số khách hàng"
               value={statistic?.customerCount ?? 0}
@@ -72,9 +73,21 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={16} style={{ marginTop: "20px", minHeight: "500px" }}>
+      <Row gutter={16} style={{ marginTop: "20px" }}>
         <Col span={15}>
-          <LineChartComponent />
+          <Card
+            style={{
+              backgroundColor: "white",
+              // padding: "8px",
+              // paddingBottom: "30px",
+              // paddingLeft: "-20px",
+            }}
+            className={styles["shadow"]}
+          >
+            <Flex justify="center">
+              <LineChartComponent />
+            </Flex>
+          </Card>
         </Col>
         <Col span={9}>
           <TopUser />

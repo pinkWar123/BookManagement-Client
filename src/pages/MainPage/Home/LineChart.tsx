@@ -37,11 +37,14 @@ const LineChartComponent: FunctionComponent = () => {
 
   const data = {
     labels: income?.map((income) => income.month),
+
     datasets: [
       {
         label: "Tổng thu nhập tháng tích lũy",
         data: income?.map((income) => income.income),
-        borderColor: "black",
+        fill: true, // This will fill the area under the line
+        backgroundColor: "white", // Background color under the line
+        borderColor: "black", // Line color
         borderWidth: 2,
         pointBackgroundColor: "black",
         pointBorderColor: "black",
@@ -57,9 +60,24 @@ const LineChartComponent: FunctionComponent = () => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: true,
     plugins: {
       legend: {
         display: false,
+      },
+      title: {
+        display: true,
+        text: "Biểu đồ thu nhập theo tháng",
+        font: {
+          size: 20,
+        },
+        color: "black",
+        align: "start", // Aligns the title to the start (left)
+        position: "top", // Positions the title at the top
+        padding: {
+          top: 10,
+          bottom: 20,
+        },
       },
       tooltip: {
         enabled: true,
@@ -72,11 +90,19 @@ const LineChartComponent: FunctionComponent = () => {
       y: {
         display: true,
         beginAtZero: false,
+        ticks: {
+          stepSize: 10000, // Step size nhỏ để giãn khoảng cách giữa các giá trị
+          callback: function (value) {
+            if (value % 100000 === 0) {
+              return value.toLocaleString(); // Chỉ hiển thị các giá trị chính (0, 100,000, 200,000,...)
+            }
+          },
+        },
       },
     },
   };
 
-  return <Line data={data} options={options} />;
+  return <Line data={data} options={options} height={170} />;
 };
 
 export default LineChartComponent;

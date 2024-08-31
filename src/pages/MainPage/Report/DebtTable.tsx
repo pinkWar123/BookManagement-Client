@@ -25,6 +25,8 @@ const DeptTable: FunctionComponent<DeptTableProps> = ({ month }) => {
         year: month.year,
         pageNumber: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 5,
+        sortBy: "FinalDebt",
+        isDescending: "true",
       };
       const res = await callGetDebtReportsByMonth(query);
       console.log(res);
@@ -45,7 +47,7 @@ const DeptTable: FunctionComponent<DeptTableProps> = ({ month }) => {
   useEffect(() => {
     const newPagination = {
       current: 1,
-      pageSize: 1,
+      pageSize: 5,
     };
     console.log("Run here");
     console.log(month);
