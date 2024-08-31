@@ -4,13 +4,16 @@ import axiosInstance from "../services/config";
 import { App, message } from "antd";
 import { isAxiosError } from "axios";
 import { handleAxiosError } from "../helpers/errorHandling";
+import { useLoading } from "./useLoading";
 
 export const useAxiosInterceptors = () => {
   const navigate = useNavigate();
   const { modal } = App.useApp();
+  const { setLoading } = useLoading();
   useEffect(() => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
+        setLoading(true);
         // You can modify the config before the request is sent
         // For example, attach an authorization token
         const token = localStorage.getItem("token");
@@ -22,12 +25,14 @@ export const useAxiosInterceptors = () => {
       (error) => {
         // Do something with request error
         console.log(error);
+        setLoading(false);
         return Promise.reject(error);
       }
     );
 
     const responseInterceptor = axiosInstance.interceptors.response.use(
       (response) => {
+        setLoading(false);
         return response;
       },
       (error) => {
@@ -44,7 +49,7 @@ export const useAxiosInterceptors = () => {
               navigate("/auth/login", { replace: true });
             },
           });
-
+          setLoading(false);
           return Promise.reject(error);
 
           // if (!originalRequest._retry) {
@@ -55,6 +60,8 @@ export const useAxiosInterceptors = () => {
             message.error({ content: handleAxiosError(error) }, 1);
           }
         }
+        setLoading(false);
+
         return Promise.reject(error);
       }
     );

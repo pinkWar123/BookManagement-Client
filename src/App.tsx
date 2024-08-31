@@ -8,12 +8,17 @@ import { MainLayoutRoutes } from "./routes/route";
 import useMessage from "antd/es/message/useMessage";
 import { UserProvider } from "./context/UserContext";
 import ErrorPage from "./components/ErrorPage";
+import { useLoading } from "./hooks/useLoading";
+import { Spin } from "antd";
 
 function App() {
   const message = useMessage();
+  const { loading } = useLoading();
+
   return (
     <>
       {message[1]}
+      <Spin spinning={loading} fullscreen />
       <BrowserRouter>
         <UserProvider>
           <Routes>
