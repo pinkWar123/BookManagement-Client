@@ -8,6 +8,8 @@ import { UpdateBookDto } from "../../models/Book/Dto/UpdateBookDto";
 import { callUpdateBook } from "../../services/bookService";
 import { handleAxiosError } from "../../helpers/errorHandling";
 import { BOOK_GENRE_COLORS } from "../../constants/bookGenres";
+import { useUser } from "../../hooks/useUser";
+import { Role } from "../../models/User/User";
 
 interface BookCardProps {
   info: BookViewDto;
@@ -16,6 +18,7 @@ interface BookCardProps {
 
 const BookCard: FunctionComponent<BookCardProps> = ({ info, fetchBooks }) => {
   const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
+  const { user } = useUser();
   const { message } = App.useApp();
   const handleCloseModal = () => setOpenUpdateModal(false);
   const handleOpenModal = () => setOpenUpdateModal(true);
@@ -29,6 +32,10 @@ const BookCard: FunctionComponent<BookCardProps> = ({ info, fetchBooks }) => {
       message.error({ content: handleAxiosError(error) });
     }
   };
+
+  const canUpdateBook = () =>
+    user?.roles.includes(Role.MANAGER) ||
+    user?.roles.includes(Role.STOREKEEPER);
 
   return (
     <>
@@ -52,14 +59,18 @@ const BookCard: FunctionComponent<BookCardProps> = ({ info, fetchBooks }) => {
               }}
             />
           }
-          actions={[
-            <Flex justify="center" onClick={handleOpenModal}>
-              <Tooltip title="Cập nhật sách">
-                <Edit3 key="add" />
-              </Tooltip>
-              ,
-            </Flex>,
-          ]}
+          actions={
+            canUpdateBook()
+              ? [
+                  <Flex justify="center" onClick={handleOpenModal}>
+                    <Tooltip title="Cập nhật sách">
+                      <Edit3 key="add" />
+                    </Tooltip>
+                    ,
+                  </Flex>,
+                ]
+              : undefined
+          }
         >
           <Meta
             // avatar={

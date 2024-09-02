@@ -167,6 +167,7 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       render: (_, record) => (
         <Form.Item key={`remove_icon-${record.key.toString()}`}>
           <Popconfirm
+            placement="topLeft"
             title="Bạn có chắc muốn hủy dòng này không?"
             onConfirm={() => handleRemove(record.key)}
           >

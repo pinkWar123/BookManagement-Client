@@ -43,7 +43,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
-      pageSize: 2,
+      pageSize: 5,
     },
   });
 
@@ -149,7 +149,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
             const tableParams: TableParams = {
               pagination: {
                 current: 1,
-                pageSize: 2,
+                pageSize: 5,
               },
             };
             searchUsers(tableParams, userFilters);

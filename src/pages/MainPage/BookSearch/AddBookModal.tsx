@@ -72,14 +72,14 @@ const AddBookModal: FunctionComponent<AddBookModalProps> = ({
         <Form.Item name="author" key="author" label="Tác giả" required>
           <Input placeholder="Nhập tác giả..." />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="stockQuantity"
           key="stockQuantity"
           label="Số lượng nhập vào"
           required
         >
           <TypedInputNumber placeholder="Nhập số lượng sách..." min={0} />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item name="genre" key="genre" label="Thể loại" required>
           <Select
             placeholder="Nhập thể loại..."

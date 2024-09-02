@@ -25,14 +25,25 @@ const HomePage: FunctionComponent<HomePageProps> = () => {
     const fetch = async () => {
       try {
         const { month, year } = getCurrentMonthYear();
-        const res = await callGetIncomeByMonth(month, year);
+        // const res = await callGetIncomeByMonth(month, year);
 
-        const customerCount = (await callGetCustomerCount()).data;
-        console.log(customerCount);
+        // const customerCount = (await callGetCustomerCount()).data;
+        // console.log(customerCount);
 
-        const invoiceCount = (await callGetInvoiceCountByMonth(month, year))
-          .data;
-        setStatistic({ income: res.data.income, customerCount, invoiceCount });
+        // const invoiceCount = (await callGetInvoiceCountByMonth(month, year))
+        //   .data;
+
+        const [incomeRes, customerRes, invoiceRes] = await Promise.all([
+          callGetIncomeByMonth(month, year),
+          callGetCustomerCount(),
+          callGetInvoiceCountByMonth(month, year),
+        ]);
+
+        setStatistic({
+          income: incomeRes.data.income,
+          customerCount: customerRes.data,
+          invoiceCount: invoiceRes.data,
+        });
       } catch (error) {
         message.error({ content: handleAxiosError(error) });
       }

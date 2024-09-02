@@ -19,3 +19,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.img {
+  height: 100vh;
+  object-fit: fill;
+}

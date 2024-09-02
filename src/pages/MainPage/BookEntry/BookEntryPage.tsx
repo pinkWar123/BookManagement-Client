@@ -14,6 +14,7 @@ const BookEntryPage: FunctionComponent<BookEntryPageProps> = () => {
     <>
       <Form.Item label="Ngày nhập sách" name="date" key="date">
         <DatePicker
+          disabled
           onChange={(date) => console.log(date.format(dateFormat))}
           format={dateFormat}
           defaultValue={dayjs()}

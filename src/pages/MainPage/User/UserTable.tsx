@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "antd";
 import { FunctionComponent } from "react";
-import {  Trash } from "react-feather";
+import { Trash } from "react-feather";
 import { Role } from "../../../models/User/User";
 import { UserViewDto } from "../../../models/User/Dto/userViewDto";
 import { TableParams } from "./UserPage";
@@ -64,6 +64,7 @@ const UserTable: FunctionComponent<UserTableProps> = ({
             value: value,
           }))}
           onChange={(e) => updateUserRole(record, e)}
+          key={`customer-${record.id}`}
         />
       ),
     },
@@ -93,6 +94,7 @@ const UserTable: FunctionComponent<UserTableProps> = ({
   return (
     <>
       <Table
+        style={{ marginTop: "20px" }}
         columns={columns}
         dataSource={users}
         pagination={tableParams.pagination}

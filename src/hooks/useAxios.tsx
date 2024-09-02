@@ -57,7 +57,9 @@ export const useAxiosInterceptors = () => {
           // }
         } else {
           if (isAxiosError(error)) {
-            message.error({ content: handleAxiosError(error) }, 1);
+            const errorMessage = handleAxiosError(error);
+            if (errorMessage !== "An error occurred")
+              message.error({ content: errorMessage }, 1);
           }
         }
         setLoading(false);

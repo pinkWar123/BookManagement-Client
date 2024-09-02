@@ -32,7 +32,7 @@ const MainHeader: FunctionComponent<MainHeaderProps> = ({ style }) => {
                 <ChevronDown style={{ marginTop: "10px", cursor: "pointer" }} />
               </Dropdown>
               <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
-              <div>
+              <div style={{ cursor: "pointer", userSelect: "none" }}>
                 <div>{user?.username}</div>
                 <div style={{ marginTop: "-45px" }}>{user?.roles}</div>
               </div>

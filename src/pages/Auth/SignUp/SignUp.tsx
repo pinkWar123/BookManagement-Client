@@ -16,7 +16,7 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
   const password = Form.useWatch("password", form);
   return (
     <div>
-      <Flex align="center" justify="center" style={{ marginTop: "-40px" }}>
+      <Flex align="center" justify="center" style={{ marginTop: "0px" }}>
         <Typography.Title level={3}>Đăng ký tài khoản</Typography.Title>
       </Flex>
       <Flex justify="center">

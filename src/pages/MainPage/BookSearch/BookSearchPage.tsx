@@ -24,6 +24,8 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/pagination";
 import { BOOK_GENRES } from "../../../constants/bookGenres";
+import { Role } from "../../../models/User/User";
+import { useUser } from "../../../hooks/useUser";
 interface BookSearchPageProps {}
 interface BookQuery {
   title: string;
@@ -32,6 +34,7 @@ interface BookQuery {
 
 const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
   const navigate = useNavigate();
+  const { user } = useUser();
   const [openAddModal, setAddModal] = useState<boolean>(false);
   const { message } = App.useApp();
   const { handleChangePage, pagination, setPagination, getQuery, params } =
@@ -75,6 +78,10 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
     navigate(`/book?${queryString}`);
   };
 
+  const canAddBook = () =>
+    user?.roles.includes(Role.MANAGER) ||
+    user?.roles.includes(Role.STOREKEEPER);
+
   return (
     <>
       {openAddModal && (
@@ -85,9 +92,11 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
         />
       )}
       <Flex gap="large" style={{ marginLeft: "8px" }}>
-        <Button icon={<Plus />} onClick={() => setAddModal(true)}>
-          Thêm sách mới
-        </Button>
+        {canAddBook() && (
+          <Button icon={<Plus />} onClick={() => setAddModal(true)}>
+            Thêm sách mới
+          </Button>
+        )}
         <Input.Search
           placeholder="Nhập tên sách..."
           className={styles["search-bar"]}
