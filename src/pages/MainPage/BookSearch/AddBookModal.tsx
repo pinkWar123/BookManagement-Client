@@ -1,5 +1,4 @@
 import { App, Flex, Form, Input, InputNumber, Modal, Select } from "antd";
-import TypedInputNumber from "antd/es/input-number";
 import { FunctionComponent, useState } from "react";
 import CancelButton from "../../../components/Button/CancelButton";
 import ConfirmButton from "../../../components/Button/ConfirmButton";

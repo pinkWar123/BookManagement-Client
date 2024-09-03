@@ -4,7 +4,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL:
     "https://bookmanagementsystem-ezb4gue9edfxfagf.eastus-01.azurewebsites.net/api/", // Replace with your base URL
-  timeout: 10000, // Optional timeout setting
+  timeout: 50000, // Optional timeout setting
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
