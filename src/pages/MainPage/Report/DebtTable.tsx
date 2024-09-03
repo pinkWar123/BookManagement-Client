@@ -21,8 +21,8 @@ const DeptTable: FunctionComponent<DeptTableProps> = ({ month }) => {
   const fetchDetails = useCallback(
     async (pagination: TablePaginationConfig, month: Month) => {
       const query = {
-        month: month.month,
-        year: month.year,
+        reportMonth: month.month,
+        reportYear: month.year,
         pageNumber: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 5,
         sortBy: "FinalDebt",
