@@ -16,7 +16,7 @@ interface PaginationParams {
   total: number;
 }
 
-const useQueryParams = () => {
+const useQueryParams = (defaultPageSize?: number) => {
   const location = useLocation();
   const [params, setParams] = useState<QueryParams>(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -29,7 +29,7 @@ const useQueryParams = () => {
   const [pagination, setPagination] = useState<PaginationParams>(() => {
     const searchParams = new URLSearchParams(location.search);
     let pageNumber = DEFAULT_PAGE_NUMBER;
-    let pageSize = DEFAULT_PAGE_SIZE;
+    let pageSize = defaultPageSize ?? DEFAULT_PAGE_SIZE;
     searchParams.forEach((value, key) => {
       if (key === "pageNumber") {
         pageNumber = parseInt(value);
@@ -47,7 +47,7 @@ const useQueryParams = () => {
     const searchParams = new URLSearchParams(location.search);
     const params: QueryParams = {};
     let pageNumber = DEFAULT_PAGE_NUMBER;
-    let pageSize = DEFAULT_PAGE_SIZE;
+    let pageSize = defaultPageSize ?? DEFAULT_PAGE_SIZE;
     searchParams.forEach((value, key) => {
       if (key === "pageNumber") {
         pageNumber = parseInt(value);

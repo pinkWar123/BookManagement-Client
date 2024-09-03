@@ -1,6 +1,7 @@
 import {
   App,
   Flex,
+  Pagination,
   Popconfirm,
   Select,
   Table,
@@ -11,15 +12,14 @@ import { FunctionComponent } from "react";
 import { Trash } from "react-feather";
 import { Role } from "../../../models/User/User";
 import { UserViewDto } from "../../../models/User/Dto/userViewDto";
-import { TableParams } from "./UserPage";
 import { TablePaginationConfig } from "antd/es/table/interface";
 
 interface UserTableProps {
   users: UserViewDto[];
   removeUser: (id: string) => void;
   updateUserRole: (record: UserViewDto, newRole: Role) => void;
-  tableParams: TableParams;
-  onChange: (pagination: TablePaginationConfig) => void;
+  tableParams: TablePaginationConfig;
+  onChange: (pageNumber: number, pageSize: number) => void;
 }
 
 const UserTable: FunctionComponent<UserTableProps> = ({
@@ -97,11 +97,13 @@ const UserTable: FunctionComponent<UserTableProps> = ({
         style={{ marginTop: "20px" }}
         columns={columns}
         dataSource={users}
-        pagination={tableParams.pagination}
-        onChange={(pagination: TablePaginationConfig) => {
-          console.log(pagination);
-          onChange(pagination);
-        }}
+        pagination={false}
+      />
+      <Pagination
+        current={tableParams.current}
+        pageSize={tableParams.pageSize}
+        total={tableParams.total}
+        onChange={onChange}
       />
     </>
   );

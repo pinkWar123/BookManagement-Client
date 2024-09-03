@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import UserTable from "./UserTable";
 import { App, Button, Flex, Input, Select, TablePaginationConfig } from "antd";
 import { USERS } from "../../../data/users";
@@ -8,10 +8,15 @@ import {
   callDeleteUser,
   callGetAllUsers,
 } from "../../../services/userService";
-import { IListUserQuery } from "../../../types/query";
 import { UserViewDto } from "../../../models/User/Dto/userViewDto";
 import { isAxiosError } from "axios";
 import { handleAxiosError } from "../../../helpers/errorHandling";
+import useQueryParams from "../../../hooks/useQueryParams";
+import { useNavigate } from "react-router-dom";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from "../../../constants/pagination";
 
 interface UserPageProps {}
 export interface TableParams {
@@ -23,59 +28,47 @@ interface UserFilter {
   role?: string;
 }
 
-const buildQuery = (tableParams: TableParams, userFilters: UserFilter) => {
-  const query: IListUserQuery = {
-    pageNumber: tableParams.pagination?.current,
-    pageSize: tableParams.pagination?.pageSize,
-    fullName: userFilters.fullName,
-    role: userFilters.role,
-  };
-
-  return query;
-};
-
 const UserPage: FunctionComponent<UserPageProps> = () => {
   const [users, setUsers] = useState<UserViewDto[]>();
+  const { pagination, setPagination, handleChangePage, getQuery, params } =
+    useQueryParams();
+  const navigate = useNavigate();
   const [userFilters, setUserFilters] = useState<UserFilter>({
-    fullName: undefined,
-    role: undefined,
-  });
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 5,
-    },
+    fullName: (params && params["fullName"]) ?? "",
+    role: (params && params["role"]) ?? "",
   });
 
   const { message } = App.useApp();
 
-  const searchUsers = async (
-    tableParams: TableParams,
-    userFilters: UserFilter
-  ) => {
-    const query = buildQuery(tableParams, userFilters);
+  const searchUsers = useCallback(async () => {
+    const query = getQuery();
     const res = await callGetAllUsers(query);
-    console.log(res.data);
     if (res?.data) {
       setUsers(res.data);
-      setTableParams({
-        pagination: {
-          current: res.pageNumber,
-          pageSize: res.pageSize,
-          total: res.totalRecords,
-        },
-      });
     }
+    setPagination({
+      pageNumber: res.pageNumber,
+      pageSize: res.pageSize,
+      total: res.totalRecords,
+    });
+  }, [getQuery, setPagination]);
+
+  const handleSearch = () => {
+    let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}`;
+    if (userFilters.fullName !== "")
+      queryString += `&genre=${userFilters.fullName}`;
+    if (userFilters.role !== "") queryString += `&title=${userFilters.role}`;
+    navigate(`/book?${queryString}`);
   };
 
   useEffect(() => {
-    searchUsers(tableParams, userFilters);
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    searchUsers();
+  }, [searchUsers]);
   const removeUser = async (id: string) => {
     try {
       const res = await callDeleteUser(id);
       if (res.data) {
-        searchUsers(tableParams, userFilters);
+        searchUsers();
       }
     } catch (error) {
       message.error({ content: handleAxiosError(error) });
@@ -98,12 +91,8 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
     }
   };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    console.log("Run");
-    setTableParams({ pagination });
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setUsers([]);
-    }
+  const handleTableChange = (pageNumber: number, pageSize: number) => {
+    handleChangePage(pageNumber, pageSize);
   };
 
   return (
@@ -144,25 +133,13 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
           />
         </>
 
-        <Button
-          onClick={() => {
-            const tableParams: TableParams = {
-              pagination: {
-                current: 1,
-                pageSize: 5,
-              },
-            };
-            searchUsers(tableParams, userFilters);
-          }}
-        >
-          Tìm kiếm
-        </Button>
+        <Button onClick={handleSearch}>Tìm kiếm</Button>
       </Flex>
       <UserTable
         users={users ?? []}
         removeUser={removeUser}
         updateUserRole={updateUserRole}
-        tableParams={tableParams}
+        tableParams={pagination}
         onChange={handleTableChange}
       />
     </>

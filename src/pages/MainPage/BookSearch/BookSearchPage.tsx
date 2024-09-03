@@ -20,8 +20,8 @@ import { handleAxiosError } from "../../../helpers/errorHandling";
 import useQueryParams from "../../../hooks/useQueryParams";
 import { useNavigate } from "react-router-dom";
 import {
+  DEFAULT_BOOK_SEARCH_PAGE_SIZE,
   DEFAULT_PAGE_NUMBER,
-  DEFAULT_PAGE_SIZE,
 } from "../../../constants/pagination";
 import { BOOK_GENRES } from "../../../constants/bookGenres";
 import { Role } from "../../../models/User/User";
@@ -38,7 +38,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
   const [openAddModal, setAddModal] = useState<boolean>(false);
   const { message } = App.useApp();
   const { handleChangePage, pagination, setPagination, getQuery, params } =
-    useQueryParams();
+    useQueryParams(DEFAULT_BOOK_SEARCH_PAGE_SIZE);
   const [bookQuery, setBookQuery] = useState<BookQuery>({
     title: "",
     genre: "",
@@ -72,7 +72,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
   }, [fetchBooks]);
 
   const handleSearch = () => {
-    let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}`;
+    let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_BOOK_SEARCH_PAGE_SIZE}`;
     if (bookQuery.genre !== "") queryString += `&genre=${bookQuery.genre}`;
     if (bookQuery.title !== "") queryString += `&title=${bookQuery.title}`;
     navigate(`/book?${queryString}`);

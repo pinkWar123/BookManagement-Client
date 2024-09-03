@@ -1,4 +1,4 @@
-import { App, Button, Table, TableProps } from "antd";
+import { App, Button, Flex, Pagination, Table, TableProps } from "antd";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import PaymentModal from "./PaymentModal";
 import useQueryParams from "../../../hooks/useQueryParams";
@@ -22,7 +22,8 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
     open: false,
   });
   const [customers, setCustomers] = useState<CustomerViewDto[]>();
-  const { getQuery, pagination } = useQueryParams();
+  const { getQuery, pagination, setPagination, handleChangePage } =
+    useQueryParams();
   const { message } = App.useApp();
 
   const fetchCustomers = useCallback(async () => {
@@ -31,10 +32,15 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
       const res = await callGetCustomers(getQuery());
       console.log(res);
       setCustomers(res.data);
+      setPagination({
+        pageNumber: res.pageNumber,
+        pageSize: res.pageSize,
+        total: res.totalRecords,
+      });
     } catch (error) {
       message.error({ content: handleAxiosError(error) });
     }
-  }, [getQuery, message]);
+  }, [getQuery, message, setPagination]);
 
   useEffect(() => {
     fetchCustomers();
@@ -118,12 +124,23 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
       <Table
         columns={columns}
         dataSource={customers}
-        pagination={{
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          current: pagination.pageNumber,
-        }}
+        pagination={false}
+        // onChange={() =>
+        //   handleChangePage(
+        //     pagination.pageNumber + 1,
+        //     pagination.pageSize ?? DEFAULT_PAGE_SIZE
+        //   )
+        // }
       />
+      <Flex justify="flex-end" style={{ marginTop: "12px" }}>
+        <Pagination
+          defaultCurrent={pagination.pageNumber}
+          current={pagination.pageNumber}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onChange={(page, pageSize) => handleChangePage(page, pageSize)}
+        />
+      </Flex>
       {modalConfig.open && (
         <PaymentModal
           customer={modalConfig.value}

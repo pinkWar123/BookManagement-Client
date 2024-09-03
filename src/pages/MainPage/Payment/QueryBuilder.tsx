@@ -3,6 +3,10 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import useQueryParams from "../../../hooks/useQueryParams";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from "../../../constants/pagination";
 
 interface QueryBuilderProps {}
 
@@ -17,7 +21,7 @@ const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
   });
   const [isDescending, setIsDescending] = useState<boolean>(false);
   const handleSearch = () => {
-    let queryString = `pageNumber=1&pageSize=10`;
+    let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}`;
     queryString += `&IsDescending=${isDescending}`;
     if (customerName !== "") queryString += `&customerName=${customerName}`;
     if (sortBy.customerName) {
