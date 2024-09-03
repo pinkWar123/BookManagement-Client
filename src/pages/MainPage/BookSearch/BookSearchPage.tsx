@@ -53,9 +53,7 @@ const BookSearchPage: FunctionComponent<BookSearchPageProps> = () => {
 
   const fetchBooks = useCallback(async () => {
     try {
-      console.log(getQuery());
       const res = await callGetAllBooks(getQuery());
-      console.log(res);
       setBooks(res.data);
       setPagination({
         pageNumber: res.pageNumber,

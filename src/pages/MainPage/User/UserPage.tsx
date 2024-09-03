@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
+  DEFAULT_TOTAL,
 } from "../../../constants/pagination";
 
 interface UserPageProps {}
@@ -28,10 +29,14 @@ interface UserFilter {
   role?: string;
 }
 
+interface UserQuery extends UserFilter {
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 const UserPage: FunctionComponent<UserPageProps> = () => {
   const [users, setUsers] = useState<UserViewDto[]>();
-  const { pagination, setPagination, handleChangePage, getQuery, params } =
-    useQueryParams();
+  const { pagination, setPagination, getQuery, params } = useQueryParams();
   const navigate = useNavigate();
   const [userFilters, setUserFilters] = useState<UserFilter>({
     fullName: (params && params["fullName"]) ?? "",
@@ -41,29 +46,45 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
   const { message } = App.useApp();
 
   const searchUsers = useCallback(async () => {
-    const query = getQuery();
-    const res = await callGetAllUsers(query);
+    const res = await callGetAllUsers(getQuery());
     if (res?.data) {
       setUsers(res.data);
+      setPagination({
+        pageNumber: res.pageNumber,
+        pageSize: res.pageSize,
+        total: res.totalRecords,
+      });
     }
-    setPagination({
-      pageNumber: res.pageNumber,
-      pageSize: res.pageSize,
-      total: res.totalRecords,
-    });
   }, [getQuery, setPagination]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     let queryString = `pageNumber=${DEFAULT_PAGE_NUMBER}&pageSize=${DEFAULT_PAGE_SIZE}`;
-    if (userFilters.fullName !== "")
-      queryString += `&genre=${userFilters.fullName}`;
-    if (userFilters.role !== "") queryString += `&title=${userFilters.role}`;
-    navigate(`/book?${queryString}`);
+    const queryObj: UserQuery = {
+      pageNumber: DEFAULT_PAGE_NUMBER,
+      pageSize: DEFAULT_PAGE_SIZE,
+    };
+    if (userFilters.fullName !== "" && userFilters.fullName) {
+      queryObj.fullName = userFilters.fullName;
+      queryString += `&fullName=${userFilters.fullName}`;
+    }
+    if (userFilters.role !== "" && userFilters.role) {
+      queryString += `&role=${userFilters.role}`;
+      queryObj.role = userFilters.role;
+    }
+    navigate(`/user?${queryString}`);
+
+    const res = await callGetAllUsers(queryObj);
+    setUsers(res.data);
+    setPagination({
+      pageNumber: res.pageNumber ?? DEFAULT_PAGE_NUMBER,
+      pageSize: res.pageSize ?? DEFAULT_PAGE_SIZE,
+      total: res.totalRecords ?? DEFAULT_TOTAL,
+    });
   };
 
   useEffect(() => {
     searchUsers();
-  }, [searchUsers]);
+  }, []);
   const removeUser = async (id: string) => {
     try {
       const res = await callDeleteUser(id);
@@ -91,8 +112,24 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
     }
   };
 
-  const handleTableChange = (pageNumber: number, pageSize: number) => {
-    handleChangePage(pageNumber, pageSize);
+  const handleTableChange = async (pageNumber: number, pageSize: number) => {
+    const searchParams = new URLSearchParams(location.search);
+
+    // Update the pageNumber parameter with the new value
+    searchParams.set("pageNumber", pageNumber.toString());
+    searchParams.set("pageSize", pageSize.toString());
+
+    // Update the URL with the new query string
+    navigate(`${location.pathname}?${searchParams.toString()}`);
+    const res = await callGetAllUsers({ ...params, pageNumber, pageSize });
+    if (res?.data) {
+      setUsers(res.data);
+      setPagination({
+        pageNumber: res.pageNumber,
+        pageSize: res.pageSize,
+        total: res.totalRecords,
+      });
+    }
   };
 
   return (
@@ -107,6 +144,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
               fullName: e.target.value,
             }))
           }
+          defaultValue={(params && params["fullName"]) ?? ""}
         />
         <>
           <p style={{ marginLeft: "12px", marginTop: "6px" }}>Vai trò:</p>
@@ -123,7 +161,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
                 value: "ALL",
               },
             ]}
-            defaultValue={"ALL"}
+            defaultValue={(params && params["role"]) ?? "ALL"}
             onChange={(value) =>
               setUserFilters((prev) => ({
                 ...prev,
@@ -139,7 +177,11 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
         users={users ?? []}
         removeUser={removeUser}
         updateUserRole={updateUserRole}
-        tableParams={pagination}
+        tableParams={{
+          current: pagination.pageNumber,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+        }}
         onChange={handleTableChange}
       />
     </>

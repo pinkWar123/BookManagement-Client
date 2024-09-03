@@ -13,13 +13,14 @@ import { Trash } from "react-feather";
 import { Role } from "../../../models/User/User";
 import { UserViewDto } from "../../../models/User/Dto/userViewDto";
 import { TablePaginationConfig } from "antd/es/table/interface";
+import { useUser } from "../../../hooks/useUser";
 
 interface UserTableProps {
   users: UserViewDto[];
   removeUser: (id: string) => void;
   updateUserRole: (record: UserViewDto, newRole: Role) => void;
   tableParams: TablePaginationConfig;
-  onChange: (pageNumber: number, pageSize: number) => void;
+  onChange: (pageNumber: number, pageSize: number) => Promise<void>;
 }
 
 const UserTable: FunctionComponent<UserTableProps> = ({
@@ -30,6 +31,10 @@ const UserTable: FunctionComponent<UserTableProps> = ({
   onChange,
 }) => {
   const { notification } = App.useApp();
+  const { user } = useUser();
+  const isMe = (email: string, username: string) =>
+    email === user?.email && username === user.username;
+
   const columns: TableProps<UserViewDto>["columns"] = [
     {
       title: "ID",
@@ -58,6 +63,7 @@ const UserTable: FunctionComponent<UserTableProps> = ({
       width: "20%",
       render: (value: Role[], record) => (
         <Select
+          disabled={isMe(record.email, record.userName)}
           defaultValue={value[0]}
           options={Object.entries(Role).map(([key, value]) => ({
             label: key,
@@ -69,23 +75,26 @@ const UserTable: FunctionComponent<UserTableProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: "Hành động",
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <Flex gap="middle">
           <Popconfirm
+            placement="topLeft"
             title="Bạn có chắc muốn xóa người dùng này không?"
             onConfirm={() => {
               removeUser(record.id);
               notification.success({ message: "Delete user succesfully" });
             }}
           >
-            <Tooltip title="Xóa user">
-              <a>
-                <Trash color="red" size={20} />
-              </a>
-            </Tooltip>
+            {!isMe(record.email, record.userName) && (
+              <Tooltip title="Xóa user">
+                <a>
+                  <Trash color="red" size={20} />
+                </a>
+              </Tooltip>
+            )}
           </Popconfirm>
         </Flex>
       ),
@@ -99,12 +108,14 @@ const UserTable: FunctionComponent<UserTableProps> = ({
         dataSource={users}
         pagination={false}
       />
-      <Pagination
-        current={tableParams.current}
-        pageSize={tableParams.pageSize}
-        total={tableParams.total}
-        onChange={onChange}
-      />
+      <Flex justify="flex-end" style={{ marginTop: "20px" }}>
+        <Pagination
+          current={tableParams.current}
+          pageSize={tableParams.pageSize}
+          total={tableParams.total}
+          onChange={onChange}
+        />
+      </Flex>
     </>
   );
 };

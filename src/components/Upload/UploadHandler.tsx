@@ -1,4 +1,4 @@
-import { Upload, UploadFile, UploadProps } from "antd";
+import { Flex, Upload, UploadFile, UploadProps } from "antd";
 import ImgCrop from "antd-img-crop";
 import { FunctionComponent } from "react";
 import { Plus } from "react-feather";
@@ -21,7 +21,9 @@ const UploadHandler: FunctionComponent<UploadHandlerProps> = ({
         onPreview={onPreview}
       >
         <button style={{ border: 0, background: "none" }} type="button">
-          <Plus />
+          <Flex justify="center">
+            <Plus />
+          </Flex>
           <div style={{ marginTop: 8 }}>Upload</div>
         </button>
       </Upload>
