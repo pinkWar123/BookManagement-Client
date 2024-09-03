@@ -154,20 +154,22 @@ const BookEntryTable: FunctionComponent<BookEntryTableProps> = () => {
       render: (_, record) => (
         <Form.Item
           name={[record.key.toString(), "addQuantity"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Số lượng không được để trống" }]}
         >
           <TypedInputNumber min={0} />
         </Form.Item>
       ),
     },
     {
-      title: "Action",
+      title: "Tùy chọn",
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <Form.Item key={`remove_icon-${record.key.toString()}`}>
           <Popconfirm
             placement="topLeft"
+            cancelText="Hủy"
+            okText="Đồng ý"
             title="Bạn có chắc muốn hủy dòng này không?"
             onConfirm={() => handleRemove(record.key)}
           >

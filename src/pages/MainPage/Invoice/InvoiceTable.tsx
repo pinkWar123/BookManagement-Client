@@ -211,12 +211,14 @@ const InvoiceTable: React.FC<InvoiceTableTableProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: "Tùy chọn",
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <Form.Item>
           <Popconfirm
+            cancelText="Hủy"
+            okText="Đồng ý"
             title="Bạn có chắc muốn hủy dòng này không?"
             onConfirm={() => handleRemove(record.key)}
           >

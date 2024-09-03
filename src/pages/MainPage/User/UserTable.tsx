@@ -75,7 +75,7 @@ const UserTable: FunctionComponent<UserTableProps> = ({
       ),
     },
     {
-      title: "Hành động",
+      title: "Tùy chọn",
       dataIndex: "action",
       key: "action",
       render: (_, record) => (

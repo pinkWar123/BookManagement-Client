@@ -73,7 +73,7 @@ const PaymentTable: FunctionComponent<PaymentTableProps> = () => {
       key: "totalDebt",
     },
     {
-      title: "Action",
+      title: "Tùy chọn",
       key: "action",
       render: (_, record) => (
         <>

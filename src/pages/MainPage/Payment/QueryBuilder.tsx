@@ -48,6 +48,7 @@ const QueryBuilder: FunctionComponent<QueryBuilderProps> = () => {
     <Flex gap="large">
       <Form.Item>
         <Input
+          defaultValue={params && params["customerName"]}
           placeholder="Nhập tên khách hàng"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}

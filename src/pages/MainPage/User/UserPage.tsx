@@ -157,7 +157,7 @@ const UserPage: FunctionComponent<UserPageProps> = () => {
                 value: user.role,
               })),
               {
-                label: "ALL",
+                label: "Tất cả",
                 value: "ALL",
               },
             ]}

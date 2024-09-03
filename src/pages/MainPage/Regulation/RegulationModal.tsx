@@ -27,30 +27,34 @@ const RegulationModal: FunctionComponent<RegulationModalProps> = ({
   return (
     <Modal
       open={modalConfig?.open ?? false}
+      cancelText="Hủy"
+      okText="Đồng ý"
       onCancel={onClose}
       onOk={() => onSubmit(modalConfig.regulation, newValue, newStatus)}
     >
-      <Row>
-        <Col span={16}>
-          <span>{modalConfig?.regulation?.content ?? ""}</span>:
-        </Col>
-        <Col span={6}>
-          <Form.Item>
-            {modalConfig?.regulation?.code === "QD4" ? (
-              <Switch
-                value={newValue === 0 ? false : true}
-                onChange={(value) => setNewValue(value ? 1 : 0)}
-              />
-            ) : (
-              <InputNumber
-                type="number"
-                value={newValue}
-                onChange={(value) => setNewValue(value ?? -1)}
-              />
-            )}
-          </Form.Item>
-        </Col>
-      </Row>
+      {modalConfig?.regulation?.code !== "QD4.0" && (
+        <Row>
+          <Col span={16}>
+            <span>{modalConfig?.regulation?.content ?? ""}</span>:
+          </Col>
+          <Col span={6}>
+            <Form.Item>
+              {modalConfig?.regulation?.code === "QD4" ? (
+                <Switch
+                  value={newValue === 0 ? false : true}
+                  onChange={(value) => setNewValue(value ? 1 : 0)}
+                />
+              ) : (
+                <InputNumber
+                  type="number"
+                  value={newValue}
+                  onChange={(value) => setNewValue(value ?? -1)}
+                />
+              )}
+            </Form.Item>
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col span={16}>
           <span>Áp dụng: </span>

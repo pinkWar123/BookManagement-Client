@@ -69,7 +69,7 @@ const TitleDebounceSelect: React.FC<IProps> = ({
       maxCount={1}
       mode="multiple"
       value={items}
-      placeholder="Select tags"
+      placeholder="Nhập tên sách"
       fetchOptions={fetchTitleList}
       onChange={(value) => {
         const _value = value as unknown as BookValue[];

@@ -34,7 +34,7 @@ const RegulationPage: FunctionComponent<RegulationPageProps> = () => {
   }, [message]);
 
   const renderContent = (value: number, record: RegulationViewDto) => {
-    if (record.code === "QD4") return value;
+    if (record.code === "QD4.0") return value;
     else return value + " " + record.value;
   };
   const [modalConfig, setModalConfig] = useState<ModalConfig>({

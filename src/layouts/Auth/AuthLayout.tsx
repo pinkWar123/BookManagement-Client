@@ -42,7 +42,7 @@ const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
                 : "Chưa có tài khoản?"}
             </div>
             <Button onClick={authNavigate}>
-              {getLastSegment(location) === "signup" ? "Đằng nhập" : "Đăng ký"}
+              {getLastSegment(location) === "signup" ? "Đăng nhập" : "Đăng ký"}
             </Button>
           </Flex>
         </Flex>
@@ -54,20 +54,11 @@ const AuthLayout: FunctionComponent<AuthLayoutProps> = () => {
           <div>
             <img
               className={styles["img"]}
-              src="https://media.istockphoto.com/id/1135341047/vector/login-page-on-laptop-screen-notebook-and-online-login-form-sign-in-page-user-profile-access.jpg?s=612x612&w=0&k=20&c=EsJEsevxVZujj_IU_nLz4tZcvmcXTy7sQt03bpfz3ZQ="
+              src="/wallpaperflare.com_wallpaper.jpg"
             />
           </div>
           <div>
-            <img
-              className={styles["img"]}
-              src="https://t4.ftcdn.net/jpg/01/19/11/55/360_F_119115529_mEnw3lGpLdlDkfLgRcVSbFRuVl6sMDty.jpg"
-            />
-          </div>
-          <div>
-            <img
-              className={styles["img"]}
-              src="https://static.vecteezy.com/system/resources/thumbnails/011/635/825/small/abstract-square-interface-modern-background-concept-fingerprint-digital-scanning-visual-security-system-authentication-login-vector.jpg"
-            />
+            <img className={styles["img"]} src="/bìa 2.jpg" />
           </div>
         </Carousel>
       </Col>
